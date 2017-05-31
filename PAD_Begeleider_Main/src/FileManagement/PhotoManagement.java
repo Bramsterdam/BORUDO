@@ -228,7 +228,7 @@ public class PhotoManagement extends ManagementScreen {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             System.out.println("Driver loaded");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/borudo", "teamrocket", "rickchardet");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/borudo", "amsta1", "appel123");
             System.out.println("Database connected");
 
         } catch (ClassNotFoundException | SQLException ex) {
