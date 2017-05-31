@@ -21,7 +21,7 @@ import javafx.scene.layout.VBox;
 
 public class Quickbar {
     
-    //Button that for switching between functionalities.
+    //Buttons for switching between functionalities.
     public VBox quickbar = new VBox(40);
     private Button quickHome = new Button();
     private Button quickPhoto = new Button();
@@ -29,6 +29,7 @@ public class Quickbar {
     private Button quickMusic = new Button();
     
     public Quickbar() {
+        
         quickbar.setAlignment(Pos.CENTER);
         quickbar.setPadding(new Insets(30,30,30,30));
         quickbar.setStyle("-fx-background-color:#A0A0A0");

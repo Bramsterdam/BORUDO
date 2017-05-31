@@ -8,12 +8,14 @@ package Selectionscreens;
 import Controller.DisplayControl;
 import Selectionscreens.SelectionMenu;
 import java.io.File;
+import static java.lang.Math.random;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Random;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -52,8 +54,8 @@ public class MusicScreen implements SelectionMenu {
     Label titlePlaylist4 = new Label("Playlist title");
 
     //Temporarily add cover images and music path for the lack of a database
-    String coverPlaylist1 = "file:src/Resources/Music/Test (1).jpg";
-    String music1 = "src/Resources/Music/Anberlin (1).mp3";
+    String coverPlaylist1 = "file:src/Resources/Music/cover/Anberlin.jpg";
+    String music1 = "src/Resources/Music/A Day Late.mp3";
 
     //Creates an array to hold the random generated number, selection buttons and info labels
     int[] RandomizerID = {0, 1, 2, 3};
@@ -113,9 +115,6 @@ public class MusicScreen implements SelectionMenu {
         musicPane.getChildren().add(mediaView);
         musicPane.getChildren().add(imageView);
 
-        //Causes the music to play when called upon
-        musicPlayer.setAutoPlay(true);
-
         //Initialize selection menu
         Randomize();
 
@@ -127,38 +126,38 @@ public class MusicScreen implements SelectionMenu {
      */
     @Override
     public void Randomize() {
-        
-      
-        ArrayList<String> slideshowFiles = new ArrayList<>();
 
-        String selectedID = "";
-        String selectedPath = "";
-        String selectedTitle = "Geen titel";
-        String selectedThunbnail = "";
-        
         initializeDB();
-        //Create random numbers that decide what playlist gets queued
+
+        //For every button a new playlist is linked
         for (int i = 0; i < musicButtons.length; i++) {
 
-            int randomNumberIsArtist = (int) (Math.random() * (1));
+            ArrayList<String> slideshowFiles = new ArrayList<>();
+            Random random = new Random();
+            String selectedID = "";
+            String selectedPath = "";
+            String selectedThumbnail = "";
 
-            if (randomNumberIsArtist == 0) {
-
+            // when true the queue is based on the artist, if false based on album name
+            if (random.nextBoolean() == true) {
                 try {
-                    
+                    //Obtain the data that is only relevant once per cycle from the database
                     Statement state = connection.createStatement();
                     ResultSet resultSet1 = state.executeQuery("select ArtistName, ArtistThumbnail from artist ORDER BY RAND() LIMIT 1");
                     while (resultSet1.next()) {
                         selectedID = resultSet1.getString("ArtistName");
-                        selectedThunbnail = resultSet1.getString("ArtistThumbnail");
+                        selectedThumbnail = resultSet1.getString("ArtistThumbnail");
                     }
-                    resultSet1 = state.executeQuery("select musicPath from music where mArtist = '" + selectedID + "' ;");
-                    while (resultSet1.next()) {
-                        selectedPath = resultSet1.getString("musicPath");
+                    
+                    //Adds all paths of the songs to an array.
+                    ResultSet resultSet2 = state.executeQuery("select musicPath from music where mArtist = '" + selectedID + "' ;");
+                    while (resultSet2.next()) {
+                        selectedPath = resultSet2.getString("musicPath");
                         slideshowFiles.add(selectedPath);
 
-                        designButton(musicButtons[i], musicLabels[i], selectedID, slideshowFiles, selectedThunbnail);
                     }
+                    //Uses all the obtained info to setup the corresponding button
+                    designButton(musicButtons[i], musicLabels[i], selectedID, slideshowFiles, selectedThumbnail);
 
                 } catch (SQLException ex) {
                     System.out.println("Failed");
@@ -166,22 +165,27 @@ public class MusicScreen implements SelectionMenu {
 
             } else {
 
+                //if album name is picked
                 try {
+                    
+                    //Obtain the data that is only relevant once per cycle from the database
                     Statement state = connection.createStatement();
                     ResultSet resultSet1 = state.executeQuery("select PlaylistName,PlaylistThumbnail from playlist ORDER BY RAND() LIMIT 1");
                     while (resultSet1.next()) {
                         selectedID = resultSet1.getString("PlaylistName");
-                        System.out.println(selectedID);
-                        selectedThunbnail = resultSet1.getString("PlatlistThumbnail");
+                        selectedThumbnail = resultSet1.getString("PlaylistThumbnail");
                     }
-                    resultSet1 = state.executeQuery("select musicPath from music where mPlaylist = '" + selectedID + "' ;");
-                    while (resultSet1.next()) {
-                        selectedPath = resultSet1.getString("musicPath");
+                    ResultSet resultSet2 = state.executeQuery("select musicPath from music where mPlaylist = '" + selectedID + "'ORDER BY RAND() ;");
+
+                    //Adds all paths of the songs to an array.
+                    while (resultSet2.next()) {
+                        selectedPath = resultSet2.getString("musicPath");
                         slideshowFiles.add(selectedPath);
 
-                        designButton(musicButtons[i], musicLabels[i], selectedID, slideshowFiles, selectedThunbnail);
                     }
-
+                    
+                    //Uses all the obtained info to setup the corresponding button
+                    designButton(musicButtons[i], musicLabels[i], selectedID, slideshowFiles, selectedThumbnail);
                 } catch (SQLException ex) {
                     System.out.println("Failed");
                 }
@@ -194,14 +198,14 @@ public class MusicScreen implements SelectionMenu {
      *
      * @param button : Button that needs to be changed
      * @param label : Label that shows info about the file
-     * @param playlistTitle
+     * @param playlistTitle : little of the playlist or performing artist
      * @param playlist : the playlist containing paths to all the files
-     * @param cover
-     * @param image : Coverimage that shows what playlist it is.
+     * @param cover : cover image
      */
     public void designButton(Button button, Label label, String playlistTitle, ArrayList<String> playlist, String cover) {
 
         //Creates and image for the coverpicture to place over the button
+        System.out.println(cover);
         Image thumbnail = new Image(cover, 500, 500, true, false);
         ImageView thumbnailView = new ImageView(thumbnail);
 
@@ -227,6 +231,7 @@ public class MusicScreen implements SelectionMenu {
             mediaView.setMediaPlayer(musicPlayer);
 
             //start playing
+            musicPlayer.setAutoPlay(true);
             DisplayControl.playMusic();
 
         });
@@ -271,7 +276,7 @@ public class MusicScreen implements SelectionMenu {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             System.out.println("Driver loaded");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/borudo", "teamrocket", "rickchardet");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/borudo", "amsta1", "appel123");
             System.out.println("Database connected");
 
         } catch (ClassNotFoundException | SQLException ex) {
@@ -282,5 +287,3 @@ public class MusicScreen implements SelectionMenu {
     }
 
 }
-    
-

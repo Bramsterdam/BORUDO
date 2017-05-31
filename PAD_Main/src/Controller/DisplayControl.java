@@ -4,6 +4,7 @@ package Controller;
 import GUI.Homescreen;
 import GUI.Quickbar;
 import Selectionscreens.MusicScreen;
+import Selectionscreens.PhotoScreen;
 import Selectionscreens.VideoScreen;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,9 +23,9 @@ public class DisplayControl {
     private static Quickbar quickbar = new Quickbar();
     private static VideoScreen videoscreen = new VideoScreen();
     private static MusicScreen musicscreen = new MusicScreen();
+    private static PhotoScreen photoscreen = new PhotoScreen();
     
-    
-    
+    //Full Application
     Scene borudoDisplay = new Scene(UserInterface,3500,3500);
     
     
@@ -45,6 +46,7 @@ public class DisplayControl {
         
         
         UserInterface.setRight(quickbar.getQuickbar());
+        UserInterface.setCenter(photoscreen.getPhotoScreen());
         
         turnOffMedia();
     }
@@ -59,6 +61,8 @@ public class DisplayControl {
            
         turnOffMedia();
     }
+    
+    //Plays Video
     public static void playVideo (){
         
         UserInterface.setCenter(videoscreen.getVideoPlayer());
@@ -77,12 +81,15 @@ public class DisplayControl {
         turnOffMedia();
     }
     
+    
+    //Plays Music
     public static void playMusic (){
         
         UserInterface.setCenter(musicscreen.getMusicPlayer());
         musicscreen.playMusic();
     }
     
+    //Turns of all media
     public static void turnOffMedia() {
         
         musicscreen.stopMusic();
@@ -91,7 +98,7 @@ public class DisplayControl {
     
     /**
      * returns a scene to be executed
-     * @return 
+     * @return full application
      */
     public Scene diplayBorudo() {
         return borudoDisplay;
