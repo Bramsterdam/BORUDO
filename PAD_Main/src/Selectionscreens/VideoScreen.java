@@ -135,6 +135,7 @@ public class VideoScreen implements SelectionMenu {
 
         videoPlayer.setAutoPlay(true);
 
+        //calls the randomize method
         Randomize();
 
     }
