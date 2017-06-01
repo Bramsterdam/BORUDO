@@ -32,18 +32,16 @@ import javafx.stage.FileChooser;
 
 /**
  * This class contains all SQL queries used by the employees
- * 
+ *
  * @author $Iwan Snapper
  */
 public class SQL {
 
     //Section: Selecting file from computer
-    
 //    private static FileChooser fileChooser;
 //    private static File file = new File();
 //    private final Desktop desktop = Desktop.getDesktop();
 //    private static String pathFile;
-
     private static StackPane test = new StackPane();
 
     private static Connection connection;
@@ -61,11 +59,13 @@ public class SQL {
     }
 
     /**
-     * Adds a song to the database based on given information also checks if the playlist or artist already exists
+     * Adds a song to the database based on given information also checks if the
+     * playlist or artist already exists
+     *
      * @param location : file location
-     * @param title:     song title
-     * @param playlist;  playlist name
-     * @param artist:   artist name
+     * @param title: song title
+     * @param playlist; playlist name
+     * @param artist: artist name
      */
     public static void AddMusic(String location, String title, String playlist, String artist) {
 
@@ -97,7 +97,6 @@ public class SQL {
          */
         try {
 
-            
             Statement state = connection.createStatement();
             ResultSet rs2 = state.executeQuery("Select * from Artist where ArtistName ='" + artist + "'");
             //If the query returns the Artistt already exists if not creates it
@@ -156,13 +155,13 @@ public class SQL {
 
         /*
         Check whether the theme already exists
-        */
+         */
         try {
 
             Statement state = connection.createStatement();
             ResultSet rs1 = state.executeQuery("Select * from pTheme where PTheme ='" + category + "'");
 
-             //If the query returns the theme already exists if not creates it
+            //If the query returns the theme already exists if not creates it
             if (rs1.next()) {
                 System.out.println("Playlist bestaat al");
             } else {
@@ -173,10 +172,9 @@ public class SQL {
             Logger.getLogger(SQL.class.getName()).log(Level.SEVERE, null, ex);
 
         }
-        
+
         /**
-         * after confirming the existance of the correct theme
-         * add the data.
+         * after confirming the existance of the correct theme add the data.
          */
         try {
             Statement state = connection.createStatement();
@@ -191,7 +189,6 @@ public class SQL {
         //AddPhotoCategory(category);
     }
 
-    
     public static void AddMusicPlaylist(String playlistName) {
 
         //placeholder cover
@@ -200,7 +197,6 @@ public class SQL {
         initializeDB();
 
 //            file = fileChooser.showOpenDialog(ManagementController.setMusicButton.getScene().getWindow());
-
 //        if (file != null) {
 //            pathFile = file.getAbsolutePath();
 //            newPlaylistThumbnail = pathFile;
@@ -208,7 +204,7 @@ public class SQL {
         try {
             //Database remove the \ escape character
             newPlaylistThumbnail.replace("\\", "\\\\");
-            
+
             //Insert into the database
             Statement state = connection.createStatement();
             state.executeUpdate("insert into playlist (PlaylistName, PlaylistThumbnail) VALUES ('" + playlistName + "',' file:" + newPlaylistThumbnail + "')");
@@ -233,7 +229,7 @@ public class SQL {
         try {
             //Database removes \ escape character 
             newArtistThumbnail = newArtistThumbnail.replace("\\", "\\\\");
-            
+
             //add new artist to the database
             Statement state = connection.createStatement();
             System.out.println("insert into artist (artistName, ArtistThumbnail) VALUES ('" + artistName + "', 'file:" + newArtistThumbnail + "')");
@@ -260,14 +256,53 @@ public class SQL {
 
     public static void RemoveMusic(Songs song) {
 
+        String usedArtist = "";
+        String usedPlaylist = "";
+
         try {
             initializeDB();
+
+            Statement state = connection.createStatement();
+            ResultSet rs1 = state.executeQuery("Select martist, mplaylist from Music where idMusic = " + song.getSongID());
+            if (rs1.next()) {
+                usedArtist = rs1.getString(1);
+                usedPlaylist = rs1.getString(2);
+            }
+
             PreparedStatement removeMusic = connection.prepareStatement("DELETE FROM `borudo`.`Music` WHERE `idMusic`= ? ;");
 
             if (song.getSongID() != null) {
                 removeMusic.setInt(1, Integer.parseInt(song.getSongID()));
                 removeMusic.executeUpdate();
             }
+
+            ResultSet rs2 = state.executeQuery("Select Count(*) from music where mArtist = '" + usedArtist + "';");
+
+            if (rs2.next()) {
+                if (rs2.getInt(1) == 0) {
+                    PreparedStatement removeArtist = connection.prepareStatement("DELETE FROM `borudo`.`Artist` WHERE `ArtistName`= ? ;");
+                    removeArtist.setString(1, usedArtist);
+                    removeArtist.executeUpdate();
+                }
+            }
+            System.out.println(usedArtist + usedPlaylist);
+            ResultSet rs3 = state.executeQuery("Select Count(*) from music where mPlaylist = '" + usedPlaylist + "';");
+
+            if (rs3.next()) {
+                if (rs3.getInt(1) == 0) {
+                    PreparedStatement removePlaylist = connection.prepareStatement("DELETE FROM `borudo`.`Playlist` WHERE `PlaylistName`= ? ;");
+                    removePlaylist.setString(1, usedPlaylist);
+                    removePlaylist.executeUpdate();
+                }
+            }
+
+            /*
+            
+            Count amount of playlist if == 0 remove!
+            
+            
+            
+             */
         } catch (SQLException ex) {
             Logger.getLogger(SQL.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -291,7 +326,14 @@ public class SQL {
 
     public static void RemovePhoto(Photos photo) {
 
+        String usedTheme = "";
         try {
+
+            Statement state = connection.createStatement();
+            ResultSet rs1 = state.executeQuery("Select PTheme from Photos where idPhotos = " + photo.getPhotoID());
+            if (rs1.next()) {
+                usedTheme = rs1.getString(1);
+            }
 
             initializeDB();
             System.out.println("DELETE FROM `borudo`.`photos` WHERE `idPhotos`= ? ;");
@@ -301,6 +343,17 @@ public class SQL {
                 removeMusic.setInt(1, Integer.parseInt(photo.getPhotoID()));
                 removeMusic.executeUpdate();
             }
+
+            ResultSet rs2 = state.executeQuery("Select Count(*) from photos where PTheme  = '" + usedTheme + "';");
+
+            if (rs2.next()) {
+                if (rs2.getInt(1) == 0) {
+                    PreparedStatement removeTheme = connection.prepareStatement("DELETE FROM `borudo`.`PTheme` WHERE `PTheme`= ? ;");
+                    removeTheme.setString(1, usedTheme);
+                    removeTheme.executeUpdate();
+                }
+            }
+
         } catch (SQLException ex) {
             Logger.getLogger(SQL.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -312,7 +365,7 @@ public class SQL {
         List<String> allPlaylists = new ArrayList();
 
         try {
-            
+
             //obtain data from database
             Statement state = connection.createStatement();
             ResultSet rs = state.executeQuery("Select PlaylistName from Playlist");
@@ -339,7 +392,7 @@ public class SQL {
         List<String> allArtists = new ArrayList();
 
         try {
-            
+
             //obtain data from database
             Statement state = connection.createStatement();
             ResultSet rs = state.executeQuery("Select ArtistName from Artist");
