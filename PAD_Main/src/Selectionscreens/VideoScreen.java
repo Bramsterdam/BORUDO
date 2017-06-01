@@ -38,9 +38,8 @@ public class VideoScreen implements SelectionMenu {
 
     private static Statement stmnt;
     private static PreparedStatement pst;
-
     
-     //Control Buttons for video in video (full)screen mode
+    //Control Buttons for video in video (full)screen mode
     Button play = new Button("play");
     Button pause = new Button("pause");
     Slider volumeSlider = new Slider();
@@ -66,18 +65,17 @@ public class VideoScreen implements SelectionMenu {
     //Placeholder video, are to be removed once a database has been implemented
     String Video1 = "src/Resources/Videos/Test (1).mp4";
 
-
     //Contains all the button that are use to select a video
     Button[] videoButtons = {pickVideo1, pickVideo2, pickVideo3, pickVideo4};
     Label[] videoLabels = {titleVideo1, titleVideo2, titleVideo3, titleVideo4};
 
-    //Creates the mediaplayer that show all videos.
+    //Creates the mediaplayer that shows all videos.
     Media queuedVideo = new Media(new File(Video1).toURI().toString());
     MediaPlayer videoPlayer = new MediaPlayer(queuedVideo);
     MediaView mediaView = new MediaView(videoPlayer);
 
+    //Panes to be added to a scene
     GridPane videoSelectionPane = new GridPane();
-
     StackPane videoPane = new StackPane();
     HBox playButtons = new HBox();
     
@@ -88,6 +86,8 @@ public class VideoScreen implements SelectionMenu {
         videoSelectionPane.setHgap(100);
         videoSelectionPane.setVgap(40);
 
+        //sets the button to full volume, instead of 0 volume
+        volumeSlider.setValue(100);
         
         //event for playing video
         play.setOnAction(e ->{
@@ -132,15 +132,15 @@ public class VideoScreen implements SelectionMenu {
         playButtons.setSpacing(10);
         playButtons.getChildren().addAll(play, pause, volumeSlider);
         
-
+        //sets the correct alignment for the image and play/volume buttons
         mediaView.fitWidthProperty().bind(videoPane.widthProperty());
         mediaView.fitHeightProperty().bind(videoPane.heightProperty());
 
+        //Add nodes to the correct Panes
         playButtons.setAlignment(Pos.BOTTOM_LEFT);
-        videoPane.getChildren().addAll((playButtons),(mediaView));
+        videoPane.getChildren().addAll((playButtons),(mediaView));      
 
-        
-
+        //Initialize selection menu
         Randomize();
 
     }
