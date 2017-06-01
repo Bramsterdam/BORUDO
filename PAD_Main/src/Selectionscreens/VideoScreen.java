@@ -1,7 +1,6 @@
 package Selectionscreens;
 
 import Controller.DisplayControl;
-import java.awt.Desktop;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,7 +21,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 /**
@@ -40,8 +38,11 @@ public class VideoScreen implements SelectionMenu {
     private static PreparedStatement pst;
     
     //Control Buttons for video in video (full)screen mode
-    Button play = new Button("play");
-    Button pause = new Button("pause");
+    private String playUnicode = "▶";
+    private String pauseUnicode = "❚❚";
+        
+    Button play = new Button(playUnicode);
+    Button pause = new Button(pauseUnicode);
     Slider volumeSlider = new Slider();
 
     static boolean playing = false;
@@ -89,6 +90,10 @@ public class VideoScreen implements SelectionMenu {
         //sets the button to full volume, instead of 0 volume
         volumeSlider.setValue(100);
         
+        //sets the size and font of the playbuttons
+        play.setMinWidth(100);
+        pause.setMinWidth(100);
+                
         //event for playing video
         play.setOnAction(e ->{
             videoPlayer.play();
