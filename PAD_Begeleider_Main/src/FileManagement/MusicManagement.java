@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -26,6 +27,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -46,7 +48,7 @@ import javafx.stage.FileChooser;
 public class MusicManagement extends ManagementScreen {
 
     Connection connection;
-    
+
     private FileChooser fileChooser;
     private File file;
     private final Desktop desktop = Desktop.getDesktop();
@@ -153,13 +155,13 @@ public class MusicManagement extends ManagementScreen {
                         tfTitle.getText(),
                         cbPlaylist.getSelectionModel().getSelectedItem().toString(),
                         cbArtist.getSelectionModel().getSelectedItem().toString());
-                
-                    Reset();
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Information Dialog");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Item is toegevoegd \n");
-                    alert.showAndWait();
+
+                Reset();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information Dialog");
+                alert.setHeaderText(null);
+                alert.setContentText("Item is toegevoegd \n");
+                alert.showAndWait();
             }
         });
 
@@ -167,16 +169,20 @@ public class MusicManagement extends ManagementScreen {
             @Override
             public void handle(ActionEvent event) {
 
-                SQL.RemoveMusic(musicTableView.getSelectionModel().getSelectedItem());
-                olMusic.removeAll(olMusic);
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Dialog");
+                alert.setHeaderText("De gekozen foto zal verwijderd worden");
+                alert.setContentText("Weet u het zeker?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    SQL.RemoveMusic(musicTableView.getSelectionModel().getSelectedItem());
+                    olMusic.removeAll(olMusic);
 
                     Reset();
-                    
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Information Dialog");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Item is verwijderd \n");
-                    alert.showAndWait();    
+                } else {
+                    alert.close();
+                }
             }
         });
     }
@@ -217,11 +223,10 @@ public class MusicManagement extends ManagementScreen {
 
     }
 
-    public void loadSongs(){
+    public void loadSongs() {
 
         olMusic.removeAll(olMusic);
         try {
-            
 
             initializeDB();
             Statement state = connection.createStatement();
@@ -237,9 +242,9 @@ public class MusicManagement extends ManagementScreen {
         }
 
     }
-    
-    public void Reset(){
-        
+
+    public void Reset() {
+
         loadSongs();
         SQL.fillPlaylistCB(cbPlaylist);
         SQL.fillArtistCB(cbArtist);
@@ -252,7 +257,7 @@ public class MusicManagement extends ManagementScreen {
         cbPlaylist.setPromptText(defaultCbPlaylist);
         cbPlaylist.setValue(null);
     }
-    
+
     private void initializeDB() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -266,6 +271,5 @@ public class MusicManagement extends ManagementScreen {
 
         System.out.println("Gelukt");
     }
-
 
 }
