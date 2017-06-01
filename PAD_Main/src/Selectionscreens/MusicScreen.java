@@ -16,19 +16,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Random;
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javax.swing.text.StyledEditorKit;
+
 
 /**
  *
@@ -37,6 +40,11 @@ import javax.swing.text.StyledEditorKit;
 public class MusicScreen implements SelectionMenu {
 
     Connection connection;
+    
+    //Control Buttons for video in video (full)screen mode
+    Button play = new Button("play");
+    Button pause = new Button("pause");
+    Slider volumeSlider = new Slider();
 
     final int BUTTON_WIDTH = 500;
     final int BUTTON_HEIGHT = 430;
@@ -75,6 +83,7 @@ public class MusicScreen implements SelectionMenu {
     //Panes to be added to a scene
     GridPane musicSelectionPane = new GridPane();
     StackPane musicPane = new StackPane();
+    HBox playButtons = new HBox();
 
     /**
      *
@@ -85,6 +94,25 @@ public class MusicScreen implements SelectionMenu {
         musicSelectionPane.setAlignment(Pos.CENTER);
         musicSelectionPane.setHgap(100);
         musicSelectionPane.setVgap(40);
+        
+        //sets the button to full volume, instead of 0 volume
+        volumeSlider.setValue(100);
+        
+        //event for playing video
+        play.setOnAction(e ->{
+            musicPlayer.play();
+        });
+        
+        //event for stopping video
+        pause.setOnAction(e ->{
+            musicPlayer.pause();
+        });
+        
+        //event for changing volume value
+        volumeSlider.valueProperty().addListener((Observable ov) -> {
+            if (volumeSlider.isValueChanging()) {
+                musicPlayer.setVolume(volumeSlider.getValue() / 100.0);
+            }});
 
         //Buttons with an titel label placed on top
         musicSelectionPane.add(pickPlaylist1, 1, 1, 1, 2);
@@ -107,13 +135,19 @@ public class MusicScreen implements SelectionMenu {
         mediaView.fitHeightProperty().bind(musicPane.heightProperty());
         imageView.fitHeightProperty().bind(musicPane.heightProperty());
         imageView.setPreserveRatio(true);
+        
+        //HBox for the play buttons
+        playButtons.setStyle("-fx-background-color:#000000");
+        playButtons.setSpacing(10);
+        playButtons.getChildren().addAll(play, pause, volumeSlider);
 
+        //sets the correct alignment for the image and play/volume buttons
         musicPane.setAlignment(Pos.CENTER_RIGHT);
+        playButtons.setAlignment(Pos.BOTTOM_LEFT);
 
         //Add nodes to the correct Panes
-        musicPane.setMargin(imageView, new Insets(0, 100, 0, 0));
-        musicPane.getChildren().add(mediaView);
-        musicPane.getChildren().add(imageView);
+        musicPane.setMargin(imageView, new Insets(0, 100, 0, 0));  
+        musicPane.getChildren().addAll((playButtons),(mediaView),(imageView));
 
         //Initialize selection menu
         Randomize();
