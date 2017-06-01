@@ -38,26 +38,16 @@ import javafx.stage.FileChooser;
 public class SQL {
 
     //Section: Selecting file from computer
-//    private static FileChooser fileChooser;
-//    private static File file = new File();
-//    private final Desktop desktop = Desktop.getDesktop();
-//    private static String pathFile;
+    private static FileChooser photoChooser = new FileChooser();
+    private static File file;
+    private final Desktop desktop = Desktop.getDesktop();
+    private static String pathFile;
     private static StackPane test = new StackPane();
 
     private static Connection connection;
     private static Statement stmnt;
     private static PreparedStatement pst;
-
-    SQL() {
-//        //Creates the pop-up window to choose a file, sets the type of file also
-//        fileChooser = new FileChooser();
-//        fileChooser.getExtensionFilters().addAll(
-//                new FileChooser.ExtensionFilter("Video Files", "*.mp4", "*.avi"),
-//                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg"),
-//                new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3"),
-//                new FileChooser.ExtensionFilter("Image Files", "*.*"));
-    }
-
+    
     /**
      * Adds a song to the database based on given information also checks if the
      * playlist or artist already exists
@@ -69,6 +59,11 @@ public class SQL {
      */
     public static void AddMusic(String location, String title, String playlist, String artist) {
 
+        photoChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg"),
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
+    
+        
         initializeDB();
         location = location.replace("\\", "\\\\");
 
@@ -192,41 +187,50 @@ public class SQL {
     public static void AddMusicPlaylist(String playlistName) {
 
         //placeholder cover
-        String newPlaylistThumbnail = "src\\resources\\NoImage.png";
+        String newPlaylistThumbnail = "src\\\\resources\\\\NoImage.png";
 
         initializeDB();
 
-//            file = fileChooser.showOpenDialog(ManagementController.setMusicButton.getScene().getWindow());
-//        if (file != null) {
-//            pathFile = file.getAbsolutePath();
-//            newPlaylistThumbnail = pathFile;
-//        }
         try {
+            //Select cover image
+            photoChooser.setTitle("Selecteer een plaatjes dat bij de playlist "+ playlistName + " past");
+            file = photoChooser.showOpenDialog(ManagementController.managementPane.getScene().getWindow());
+            if (file != null) {
+                pathFile = file.getAbsolutePath();
+                newPlaylistThumbnail = pathFile;
+            }
+            
             //Database remove the \ escape character
-            newPlaylistThumbnail.replace("\\", "\\\\");
+            
+                newPlaylistThumbnail = newPlaylistThumbnail.replace("\\", "\\\\");
 
             //Insert into the database
             Statement state = connection.createStatement();
-            state.executeUpdate("insert into playlist (PlaylistName, PlaylistThumbnail) VALUES ('" + playlistName + "',' file:" + newPlaylistThumbnail + "')");
+            state.executeUpdate("insert into playlist (PlaylistName, PlaylistThumbnail) VALUES ('" + playlistName + "','file:" + newPlaylistThumbnail + "')");
 
         } catch (SQLException ex) {
             Logger.getLogger(SQL.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Still not");
         }
     }
 
     public static void AddMusicArtist(String artistName) {
 
         //Placeholder image
-        String newArtistThumbnail = "src\\resources\\NoImage.png";
+        String newArtistThumbnail = "src\\\\resources\\\\NoImage.png";
 
         initializeDB();
 
-        //file = fileChooser.showOpenDialog(ManagementController.setMusicButton.getScene().getWindow());
-//        if (file != null) {
-//            pathFile = file.getAbsolutePath();
-//            newArtistThumbnail = pathFile;
-//        }
+        
+        
         try {
+            
+            photoChooser.setTitle("Selecteer een plaatjes dat bij de Artiest: "+ artistName + " past");
+        file = photoChooser.showOpenDialog(ManagementController.setMusicButton.getScene().getWindow());
+        if (file != null) {
+            pathFile = file.getAbsolutePath();
+            newArtistThumbnail = pathFile;
+        }
             //Database removes \ escape character 
             newArtistThumbnail = newArtistThumbnail.replace("\\", "\\\\");
 
@@ -295,14 +299,6 @@ public class SQL {
                     removePlaylist.executeUpdate();
                 }
             }
-
-            /*
-            
-            Count amount of playlist if == 0 remove!
-            
-            
-            
-             */
         } catch (SQLException ex) {
             Logger.getLogger(SQL.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -400,7 +396,6 @@ public class SQL {
             //add all data to a list
             while (rs.next()) {
                 allArtists.add(rs.getString("ArtistName"));
-                System.out.println(rs.getString("ArtistName"));
 
             }
 
@@ -425,7 +420,6 @@ public class SQL {
             //add all data to a list
             while (rs.next()) {
                 allThemes.add(rs.getString("PTheme"));
-                System.out.println(rs.getString("PTheme"));
 
             }
 
