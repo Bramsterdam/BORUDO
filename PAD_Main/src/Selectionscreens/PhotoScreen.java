@@ -179,6 +179,12 @@ public class PhotoScreen implements SelectionMenu {
         });
 
     }
+    
+    public void playSlideshow (){
+        
+        
+        DisplayControl.stopIdleTimer();
+    }
 
     /**
      * Returns the selecting screen and randomize everytime it's called upon

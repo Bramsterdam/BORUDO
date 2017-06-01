@@ -6,10 +6,18 @@ import GUI.Quickbar;
 import Selectionscreens.MusicScreen;
 import Selectionscreens.PhotoScreen;
 import Selectionscreens.VideoScreen;
+import java.util.Timer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  *
@@ -24,9 +32,32 @@ public class DisplayControl {
     private static VideoScreen videoscreen = new VideoScreen();
     private static MusicScreen musicscreen = new MusicScreen();
     private static PhotoScreen photoscreen = new PhotoScreen();
-    
+   
+    public static Stage stage = new Stage();
     //Full Application
     Scene borudoDisplay = new Scene(UserInterface,3500,3500);
+    
+    
+private static final StackPane idleScreen = new StackPane(); 
+    private static final Timeline idleTimeline = new Timeline(new KeyFrame(
+        Duration.millis(50000),
+        ae -> setIdleScreen()));
+    
+    public DisplayControl() {
+        
+        
+    stage.setTitle("Second stage");
+    stage.setScene(new Scene(idleScreen, 450, 450));
+    
+        borudoDisplay.addEventFilter(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
+    @Override
+    public void handle(MouseEvent mouseEvent) {
+        resetIdleTimer();
+    }
+});
+    }
+    
+    
     
     
     /**
@@ -94,8 +125,24 @@ public class DisplayControl {
         
         musicscreen.stopMusic();
         videoscreen.stopVideo();
+        DisplayControl.resetIdleTimer();
     }
     
+    public static void setIdleScreen() {
+        stage.show();
+        System.out.println("Er is geen idle screen");
+    }
+    
+    public static void resetIdleTimer(){
+        stage.hide();
+        idleTimeline.stop();
+        idleTimeline.play();
+    }
+    
+    public static void stopIdleTimer(){
+        
+        idleTimeline.stop();
+    }
     /**
      * returns a scene to be executed
      * @return full application

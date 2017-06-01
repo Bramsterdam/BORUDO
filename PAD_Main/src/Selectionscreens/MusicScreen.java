@@ -284,6 +284,7 @@ public class MusicScreen implements SelectionMenu {
      */
     public void stopMusic() {
         musicPlayer.stop();
+        DisplayControl.stopIdleTimer();
     }
 
     /**

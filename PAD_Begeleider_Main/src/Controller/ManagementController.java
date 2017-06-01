@@ -15,9 +15,12 @@ import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -33,6 +36,7 @@ public class ManagementController {
 
     public static BorderPane managementPane = new BorderPane();
     public static HBox managementQuickbar = new HBox();
+    public static GridPane startupPane = new GridPane();
     
     public static Button setMusicButton = new Button("Muziek");
     public static Button setVideoButton = new Button("Video's");
@@ -69,7 +73,10 @@ public class ManagementController {
         managementQuickbar.getChildren().addAll(setMusicButton, setVideoButton, setPhotoButton);
         managementQuickbar.setPadding(new Insets(30, 0, 30, 0));
         managementPane.setTop(managementQuickbar);
-
+        managementPane.setCenter(startupPane);
+        startupPane.setAlignment(Pos.CENTER);
+        Label test = new Label("Hoi");
+        startupPane.add(test, 0, 0, 3, 1);
     }
     
     /**

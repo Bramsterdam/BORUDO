@@ -244,6 +244,7 @@ public class VideoScreen implements SelectionMenu {
     //Play video
     public void playVideo() {
         videoPlayer.play();
+        DisplayControl.stopIdleTimer();
     }
 
    /**
