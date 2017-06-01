@@ -6,9 +6,7 @@
 package Selectionscreens;
 
 import Controller.DisplayControl;
-import Selectionscreens.SelectionMenu;
 import java.io.File;
-import static java.lang.Math.random;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -32,7 +30,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 
-
 /**
  *
  * @author $Iwan Snapper
@@ -42,8 +39,11 @@ public class MusicScreen implements SelectionMenu {
     Connection connection;
     
     //Control Buttons for video in video (full)screen mode
-    Button play = new Button("play");
-    Button pause = new Button("pause");
+    private String playUnicode = "▶";
+    private String pauseUnicode = "❚❚";
+    
+    Button play = new Button(playUnicode);
+    Button pause = new Button(pauseUnicode);
     Slider volumeSlider = new Slider();
 
     final int BUTTON_WIDTH = 500;

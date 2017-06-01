@@ -25,6 +25,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -159,6 +160,11 @@ public class VideoManagement extends ManagementScreen {
                         tfDescription.getText());
                 
                 reset();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information Dialog");
+                alert.setHeaderText(null);
+                alert.setContentText("Item is toegevoegd \n");
+                alert.showAndWait();
             }
             
         });
@@ -171,6 +177,11 @@ public class VideoManagement extends ManagementScreen {
                 olVideo.removeAll(olVideo);
                 
                     reset();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information Dialog");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Item is verwijderd \n");
+                    alert.showAndWait();    
                 
             }
         });

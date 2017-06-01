@@ -24,6 +24,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -154,6 +155,11 @@ public class MusicManagement extends ManagementScreen {
                         cbArtist.getSelectionModel().getSelectedItem().toString());
                 
                     Reset();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information Dialog");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Item is toegevoegd \n");
+                    alert.showAndWait();
             }
         });
 
@@ -165,6 +171,12 @@ public class MusicManagement extends ManagementScreen {
                 olMusic.removeAll(olMusic);
 
                     Reset();
+                    
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information Dialog");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Item is verwijderd \n");
+                    alert.showAndWait();    
             }
         });
     }
