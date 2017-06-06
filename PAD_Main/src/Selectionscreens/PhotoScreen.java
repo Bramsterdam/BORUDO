@@ -6,6 +6,8 @@
 package Selectionscreens;
 
 import Controller.DisplayControl;
+import GUI.IdleScreen;
+import static GUI.IdleScreen.setIdleScreen;
 import java.awt.Color;
 import java.io.File;
 import java.sql.Connection;
@@ -16,16 +18,21 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,6 +45,8 @@ import javax.swing.Timer;
 public class PhotoScreen implements SelectionMenu {
 
     Connection connection;
+
+    Timeline tl = new Timeline();
 
     final int BUTTON_WIDTH = 500;
     final int BUTTON_HEIGHT = 430;
@@ -62,11 +71,17 @@ public class PhotoScreen implements SelectionMenu {
     Label[] photoLabels = {titleSlideShow1, titleSlideShow2, titleSlideShow3, titleSlideShow4, titleSlideShow5, titleSlideShow6};
     Button[] photoButtons = {pickSlideShow1, pickSlideShow2, pickSlideShow3, pickSlideShow4, pickSlideShow5, pickSlideShow6};
 
+    Image testphoto = new Image("file:src\\Resources\\Fotos\\Amsterdam(6).jpg");
+    ImageView photoViewer = new ImageView();
+
     GridPane photoSelectionPane = new GridPane();
-    StackPane photoPane = new StackPane();
+    HBox photoPane = new HBox();
+    Button backOne = new Button();
+    Button fowardOne = new Button();
 
     public PhotoScreen() {
-
+        photoViewer.setImage(testphoto);
+        
         //Sets spacing for the selection menu
         photoSelectionPane.setAlignment(Pos.CENTER);
         photoSelectionPane.setHgap(35);
@@ -94,6 +109,17 @@ public class PhotoScreen implements SelectionMenu {
         photoSelectionPane.setStyle("-fx-background-color:#FFB266");
 
         photoPane.setStyle("-fx-background-color:#000000");
+
+        backOne.prefHeightProperty().bind(photoPane.heightProperty());
+        fowardOne.prefHeightProperty().bind(photoPane.heightProperty());
+
+        photoViewer.fitHeightProperty().bind(photoPane.heightProperty());
+        photoViewer.setPreserveRatio(true);
+
+        photoPane.setAlignment(Pos.CENTER);
+        photoPane.getChildren().addAll(backOne, photoViewer, fowardOne);
+
+        Randomize();
     }
 
     /**
@@ -106,7 +132,7 @@ public class PhotoScreen implements SelectionMenu {
         initializeDB();
 
         try {
-            
+
             //for everybutton a corresponding slideshow is extracted from the database
             for (int i = 0; i < photoButtons.length; i++) {
 
@@ -114,7 +140,7 @@ public class PhotoScreen implements SelectionMenu {
                 ArrayList<String> slideshowFiles = new ArrayList<>();
                 String selectedID = "";
                 String selectedPath = "";
-                
+
                 //Obtain info that is only needed once
                 Statement state = connection.createStatement();
                 ResultSet resultSet1 = state.executeQuery("select ptheme from PTheme ORDER BY RAND() LIMIT 1");
@@ -122,12 +148,12 @@ public class PhotoScreen implements SelectionMenu {
                     selectedID = resultSet1.getString("ptheme");
                     System.out.println(selectedID);
                 }
-                
+
                 //Obtains all files from corresponding theme. in random order
                 resultSet1 = state.executeQuery("select PhotoPath from photos where PTheme = '" + selectedID + "' ORDER BY RAND() ;");
                 while (resultSet1.next()) {
                     selectedPath = resultSet1.getString("PhotoPath");
-                    System.out.println(selectedPath);
+                    System.out.println(selectedPath + "Dit is de playlist");
                     slideshowFiles.add(selectedPath);
 
                 }
@@ -153,41 +179,78 @@ public class PhotoScreen implements SelectionMenu {
 
         //Creates and image for the coverpicture to place over the button
         String cover = slideshow.get(0);
-        System.out.println(cover);
-        Image thumbnail = new Image(cover, 400, 400, true, false);
+        System.out.println(cover + "Dit is de cover");
+        Image thumbnail = new Image(cover);
         ImageView thumbnailView = new ImageView(thumbnail);
+        button.setGraphic(thumbnailView);
 
         //Changes the size of the button and makes it display the coverimage over the button
         button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         button.setMaxSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        
-        
-        button.setGraphic(thumbnailView);
-        thumbnailView.setImage(thumbnail);
+        thumbnailView.fitHeightProperty().bind(pickSlideShow1.heightProperty());
+
         //Adds file info to the button
         label.setText(playlistTitle);
 
         //Loads the correct video into the video players, then proceed to play the video
-        thumbnailView.fitHeightProperty().bind(pickSlideShow1.heightProperty());
-
         button.setOnAction((ActionEvent event) -> {
 
-            
-            
-            
-            
+            DisplayControl.playPhotoSlideshow();
+
+            playSlideshow(slideshow, 0);
+
+            IdleScreen.setPlayingTrue();
+            IdleScreen.stopIdleTimer();
+
         });
 
     }
-    
-    public void playSlideshow (){
-        
-        
-        DisplayControl.stopIdleTimer();
+
+    public void playSlideshow(ArrayList<String> playlist, int photoNr) {
+        System.out.println("De playlist speelt af");
+        int currentNr = photoNr;
+        int nextNr = (photoNr+1);
+        System.out.println(nextNr);
+
+        String selectedPath = playlist.get(photoNr);
+        System.out.println(selectedPath + "Deze foto wordt afgespeeld.");
+        Image selectedPhoto = new Image("file:src\\Resources\\Fotos\\Amsterdam(6).jpg");
+        System.out.println(selectedPhoto);
+        photoViewer.setImage(selectedPhoto);
+
+//        KeyFrame setNext = new KeyFrame(Duration.seconds(2000), (ActionEvent event) -> {
+//            if (nextNr < playlist.size()) {playSlideshow(playlist, nextNr);}
+//        });
+//        
+//
+//        tl.getKeyFrames().clear();
+//        tl.getKeyFrames().add(setNext);
+//        tl.play();
+        backOne.setOnAction((ActionEvent event) -> {
+            if (currentNr > 0) {
+                playSlideshow(playlist, (currentNr - 1));
+            }
+
+        });
+
+        fowardOne.setOnAction((ActionEvent event) -> {
+            if (nextNr < playlist.size()) {
+                playSlideshow(playlist, nextNr);
+            } else {
+                DisplayControl.turnOffMedia();
+                DisplayControl.setHomescreen();
+            }
+
+        });
+    }
+
+    public void stopSlideshow() {
+
     }
 
     /**
      * Returns the selecting screen and randomize everytime it's called upon
+     *
      * @return selection menu
      */
     public GridPane getPhotoScreen() {
@@ -201,7 +264,7 @@ public class PhotoScreen implements SelectionMenu {
      *
      * @return slideshow viewer
      */
-    public StackPane getPhotoPlayer() {
+    public HBox getPhotoPlayer() {
 
         return photoPane;
     }
