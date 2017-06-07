@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -27,6 +28,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
@@ -83,7 +85,7 @@ public class VideoManagement extends ManagementScreen {
 
     //Button for removing a file from the database
     Button removeButton = new Button("Selectie verwijderen");
-    
+
     public VideoManagement() {
 
         //Creates the pop-up window to choose a file, sets the type of file also
@@ -93,12 +95,12 @@ public class VideoManagement extends ManagementScreen {
         );
 
         //Initializes TableView
-            loadVideos();
+        loadVideos();
 
         //Adds all elements to create a list where you can see and remove entries from the database
         videoOverview.getChildren().addAll(videoTableView, removeButton);
         removeButton.prefWidthProperty().bind(videoTableView.widthProperty());
-        
+
         TableViewSetup();
 
         //Adds all elements to allow the user to add new videos to the database
@@ -111,9 +113,9 @@ public class VideoManagement extends ManagementScreen {
         addVideoPane.add(infoLocation, 0, 3);
         addVideoPane.add(lbLocation, 0, 4, 3, 1);
         addVideoPane.add(searchButton, 1, 5);
-        
+
         // remover
-         removeButton.setFont(new Font("Arial", 25));
+        removeButton.setFont(new Font("Arial", 25));
 
         //Section: File information
         addVideoPane.add(lbTitle, 0, 8);
@@ -138,11 +140,11 @@ public class VideoManagement extends ManagementScreen {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Video Files", "*.mp4")
         );
-        
+
         searchButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                
+
                 file = fileChooser.showOpenDialog(searchButton.getScene().getWindow());
                 if (file != null) {
                     pathFile = file.getAbsolutePath();
@@ -161,7 +163,7 @@ public class VideoManagement extends ManagementScreen {
                 SQL.AddVideo(selectedVideo,
                         tfTitle.getText(),
                         tfDescription.getText());
-                
+
                 reset();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information Dialog");
@@ -169,41 +171,43 @@ public class VideoManagement extends ManagementScreen {
                 alert.setContentText("Item is toegevoegd \n");
                 alert.showAndWait();
             }
-            
+
         });
-        
+
         removeButton.setMinHeight(50);
         removeButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                
-                SQL.RemoveVideo(videoTableView.getSelectionModel().getSelectedItem());
-                olVideo.removeAll(olVideo);
-                
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Dialog");
+                alert.setHeaderText("De gekozen video zal verwijderd worden");
+                alert.setContentText("Weet u het zeker?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    SQL.RemoveVideo(videoTableView.getSelectionModel().getSelectedItem());
+                    olVideo.removeAll(olVideo);
                     reset();
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Information Dialog");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Item is verwijderd \n");
-                    alert.showAndWait();    
-                
+                } else {
+                    alert.close();
+                }
             }
         });
-        
+
     }
-    
+
     public VBox getVideoOverview() {
         videoTableView.prefWidthProperty().bind(ManagementController.managementQuickbar.widthProperty().divide(1.5));
         videoTableView.prefHeightProperty().bind(videoOverview.heightProperty());
         return videoOverview;
     }
-    
+
     public GridPane getAddVideoPane() {
         return addVideoPane;
     }
-    
+
     public void TableViewSetup() {
-        
+
         TableColumn idColumn = new TableColumn("ID");
         idColumn.setMinWidth(100);
         idColumn.setCellValueFactory(
@@ -212,26 +216,26 @@ public class VideoManagement extends ManagementScreen {
         videoTitleColumn.prefWidthProperty().bind(videoTableView.widthProperty().divide(3));
         videoTitleColumn.setCellValueFactory(
                 new PropertyValueFactory<>("videoTitle"));
-        
+
         TableColumn descriptionColumn = new TableColumn("Beschrijving");
         descriptionColumn.prefWidthProperty().bind(videoTableView.widthProperty().divide(2));
         descriptionColumn.setCellValueFactory(
                 new PropertyValueFactory<>("videoDescription"));
-        
+
         videoTableView.getColumns().addAll(idColumn, videoTitleColumn, descriptionColumn);
         videoTableView.setItems(olVideo);
-        
+
     }
-    
+
     public void loadVideos() {
         olVideo.removeAll(olVideo);
-        
+
         try {
-            
+
             initializeDB();
             Statement state = connection.createStatement();
             ResultSet resultSet1 = state.executeQuery("SELECT idVideo, VideoTitle, VideoDescription from videos");
-            
+
             while (resultSet1.next()) {
                 olVideo.add(new Videos(resultSet1.getString(1), resultSet1.getString(2), resultSet1.getString(3)));
             }
@@ -239,12 +243,12 @@ public class VideoManagement extends ManagementScreen {
             Logger.getLogger(SQL.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         videoTableView.setItems(olVideo);
     }
-    
-    public void reset(){
-        
+
+    public void reset() {
+
         loadVideos();
         selectedVideo = defaultNoFile;
         lbLocation.setText(defaultNoFile);
@@ -252,21 +256,21 @@ public class VideoManagement extends ManagementScreen {
         tfTitle.clear();
         tfDescription.setPromptText(defaultTfDescription);
         tfDescription.clear();
-        
+
     }
-    
+
     private void initializeDB() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             System.out.println("Driver loaded");
             connection = DriverManager.getConnection("jdbc:mysql://localhost/borudo", "amsta1", "appel123");
             System.out.println("Database connected");
-            
+
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("Class not found");
         }
-        
+
         System.out.println("Gelukt");
     }
-    
+
 }

@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Locale.Category;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -29,6 +30,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -162,16 +164,18 @@ public class PhotoManagement extends ManagementScreen {
             @Override
             public void handle(ActionEvent event) {
 
-                SQL.RemovePhoto(photoTableView.getSelectionModel().getSelectedItem());
-                olPhoto.removeAll(olPhoto);
-
-                reset();
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information Dialog");
-                alert.setHeaderText(null);
-                alert.setContentText("Item is verwijderd \n");
-                alert.showAndWait();    
-                
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Dialog");
+                alert.setHeaderText("De gekozen foto zal verwijderd worden");
+                alert.setContentText("Weet u het zeker?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    SQL.RemovePhoto(photoTableView.getSelectionModel().getSelectedItem());
+                    olPhoto.removeAll(olPhoto);
+                    reset();
+                } else {
+                    alert.close();
+                }
             }
         });
     }
@@ -208,9 +212,9 @@ public class PhotoManagement extends ManagementScreen {
 
     }
 
-    public void loadPhotos(){
+    public void loadPhotos() {
         olPhoto.removeAll(olPhoto);
-        
+
         initializeDB();
         try {
 
@@ -225,9 +229,9 @@ public class PhotoManagement extends ManagementScreen {
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void reset(){
-        
+
+    public void reset() {
+
         loadPhotos();
         SQL.fillThemeCB(cbCategory);
         selectedFile = defaultNoFile;
@@ -236,7 +240,7 @@ public class PhotoManagement extends ManagementScreen {
         tfTitle.clear();
         cbCategory.setPromptText(defaultCbCategory);
         cbCategory.setValue(null);
-        
+
     }
 
     private void initializeDB() {
