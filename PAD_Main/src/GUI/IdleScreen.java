@@ -36,7 +36,7 @@ public class IdleScreen {
     public Scene idleScene = new Scene(idlePane, 5000, 3500);
     public static Stage idleStage = new Stage();
 
-    Label test = new Label("Hoi");
+    Label test = new Label("Klik ergens op het scherm om terug te gaan naar Borudo");
 
     public IdleScreen() {
 
