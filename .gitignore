@@ -24,3 +24,6 @@ hs_err_pid*
 /PAD_Main/dist/
 /PAD_Begeleider_Main/build/
 /PAD_Begeleider_Main/dist/
+IdleScherm/build/classes/.netbeans_automatic_build
+IdleScherm/build/classes/.netbeans_update_resources
+IdleScherm/nbproject/private/private.xml
