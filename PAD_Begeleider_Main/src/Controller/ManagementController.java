@@ -84,6 +84,11 @@ public class ManagementController {
         managementQuickbar.getChildren().addAll(setMusicButton, setVideoButton, setPhotoButton);
         managementQuickbar.setPadding(new Insets(30, 0, 30, 0));
         managementPane.setTop(managementQuickbar);
+        // button beschrijving
+        setMusicButton.setFont(new Font("Arial", 30));
+        setVideoButton.setFont(new Font("Arial", 30));
+        setPhotoButton.setFont(new Font("Arial", 30));
+
         // labels
         Label welcomeLabel = new Label("Welkom bij de begeleiders applicatie");
         Label descriptionLabel = new Label(Beschrijving);
@@ -98,7 +103,7 @@ public class ManagementController {
         welcomeLabel.setPadding(new Insets(100,100,370,100));
         descriptionLabel.setPadding(new Insets(100,100,-370,100));
         welcomeLabel.setFont(new Font("Tahoma", 55));
-        descriptionLabel.setFont(new Font("Tahoma", 55));
+        descriptionLabel.setFont(new Font("Tahoma", 50));
       
 //        //stackpanes
 //        informationPane.getChildren().add(amstaImageLabel);

@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="PAD_Begeleider_Main.jar" size="53561" download="eager" />
+    <jar href="PAD_Begeleider_Main.jar" size="68401" download="eager" />
     <jar href="lib\mysql-connector-java-5.1.23-bin.jar" size="827921" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="PAD_Begeleider_Main" >
