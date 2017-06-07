@@ -44,13 +44,13 @@ public class VideoScreen implements SelectionMenu {
     private static Statement stmnt;
     private static PreparedStatement pst;
     
-    //Control Buttons for video in video (full)screen mode, with text labels
+    //Control Buttons for video in video (full)screen mode
+    private String playUnicode = "▶";
+    private String pauseUnicode = "❚❚";
+        
     Button play = new Button();
     Button pause = new Button();
     Slider volumeSlider = new Slider();
-    Label playLabel = new Label("Start");
-    Label pauseLabel = new Label("Pauze");
-    Label volumeLabel = new Label("Volume");
 
     static boolean playing = false;
 
@@ -94,11 +94,6 @@ public class VideoScreen implements SelectionMenu {
         videoSelectionPane.setAlignment(Pos.CENTER);
         videoSelectionPane.setHgap(100);
         videoSelectionPane.setVgap(40);
-        
-        //Sets the font and size of the label text
-        playLabel.setFont(new Font("Arial", 15));
-        pauseLabel.setFont(new Font("Arial", 15));
-        volumeLabel.setFont(new Font("Arial", 15));
 
         //Sets the width and heigth of the playbuttons
         play.setMinWidth(BUTTON_WIDTH/2);
@@ -156,9 +151,9 @@ public class VideoScreen implements SelectionMenu {
         videoPane.setStyle("-fx-background-color:#000000");
         
         //HBox for the play buttons
-        playButtons.setStyle("-fx-background-color:#A0A0A0");
+        playButtons.setStyle("-fx-background-color:#000000");
         playButtons.setSpacing(15);
-        playButtons.getChildren().addAll(playLabel, play, pauseLabel, pause, volumeLabel, volumeSlider);
+        playButtons.getChildren().addAll(play, pause, volumeSlider);
         
         //sets the correct alignment for the image and play/volume buttons
         mediaView.fitWidthProperty().bind(videoPane.widthProperty());

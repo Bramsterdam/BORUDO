@@ -31,7 +31,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.scene.text.Font;
 import pad.PAD;
 
 /**
@@ -42,13 +41,10 @@ public class MusicScreen implements SelectionMenu {
 
     Connection connection;
 
-    //Control Buttons for video in video (full)screen mode, with text labels
+    //Control Buttons for video in video (full)screen mode
     Button play = new Button();
     Button pause = new Button();
     Slider volumeSlider = new Slider();
-    Label playLabel = new Label("Start");
-    Label pauseLabel = new Label("Pauze");
-    Label volumeLabel = new Label("Volume");
 
     final int BUTTON_WIDTH = 500;
     final int BUTTON_HEIGHT = 430;
@@ -100,11 +96,7 @@ public class MusicScreen implements SelectionMenu {
         musicSelectionPane.setAlignment(Pos.CENTER);
         musicSelectionPane.setHgap(100);
         musicSelectionPane.setVgap(40);
-        
-        //Sets the font and size of the label text
-        playLabel.setFont(new Font("Arial", 30));
-        pauseLabel.setFont(new Font("Arial", 30));
-        volumeLabel.setFont(new Font("Arial", 30));
+
 
         //Sets the width and heigth of the playbuttons, also the font size
         Image playImage = new Image("file:src/Resources/play.png");
@@ -163,22 +155,24 @@ public class MusicScreen implements SelectionMenu {
         musicBorderPane.setStyle("-fx-background-color:#A0A0A0");
 
         //Stretched the musicplay to fit the screen and set the correct positioning
-        mediaView.fitWidthProperty().bind(musicPane.widthProperty());
-        imageView.fitWidthProperty().bind(musicPane.widthProperty());
+        mediaView.fitHeightProperty().bind(musicPane.heightProperty());
         imageView.fitHeightProperty().bind(musicPane.heightProperty());
         imageView.setPreserveRatio(true);
-        musicPane.getChildren().addAll((mediaView), (imageView));
 
         //HBox for the play buttons
         playButtons.setStyle("-fx-background-color:#A0A0A0");
         playButtons.setSpacing(15);
         playButtons.setAlignment(Pos.CENTER);
-        playButtons.getChildren().addAll(playLabel, play, pauseLabel, pause, volumeLabel, volumeSlider);
+        playButtons.getChildren().addAll(play, pause, volumeSlider);
 
-        //Add nodes to the correct Panes
+        //sets the correct alignment for the image and play/volume buttons
         musicBorderPane.setLeft(playButtons);
         musicBorderPane.setCenter(musicPane);
 
+        //Add nodes to the correct Panes
+
+        musicPane.setMargin(imageView, new Insets(0, 50, 0, 0));
+        musicPane.getChildren().addAll((mediaView), (imageView));
         musicBorderPane.setMargin(playButtons, new Insets(0, 20, 0, 20));            
 
         //Initialize selection menu
