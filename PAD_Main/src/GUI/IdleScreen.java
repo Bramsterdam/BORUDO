@@ -29,10 +29,10 @@ import javafx.stage.Screen;
  */
 public class IdleScreen {
     
-    private static int timeBeforeIdle = 15;
+    private static int timeBeforeIdle = 3;
     
     private static final Timeline idleTimeline = new Timeline(new KeyFrame(
-            Duration.seconds(timeBeforeIdle),
+            Duration.minutes(timeBeforeIdle),
             ae -> setIdleScreen()));
 
     public static boolean playing = false;

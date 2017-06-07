@@ -21,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -72,8 +73,10 @@ public class PhotoScreen implements SelectionMenu {
     GridPane photoSelectionPane = new GridPane();
     BorderPane photoPane = new BorderPane();
     StackPane photoPlayer = new StackPane();
+    AnchorPane backOnePane = new AnchorPane();
+    AnchorPane forwardOnePane = new AnchorPane();
     Button backOne = new Button();
-    Button fowardOne = new Button();
+    Button forwardOne = new Button();
 
     public PhotoScreen() {
         
@@ -106,24 +109,37 @@ public class PhotoScreen implements SelectionMenu {
         photoSelectionPane.setStyle("-fx-background-color:#FFB266");
         photoPane.setStyle("-fx-background-color:#000000");
 
+        //Create and design button for navigating back in the slideshow
         Image navigateBack = new Image("file:src/Resources/Navigateback.png");
         ImageView navigateBackView = new ImageView(navigateBack);
         backOne.setGraphic(navigateBackView);
-        backOne.prefHeightProperty().bind(photoPane.heightProperty());
+        backOnePane.setTopAnchor(backOne, 0.0);
+        backOnePane.setBottomAnchor(backOne, 0.0);
         backOne.setMinWidth(NAVIGATE_SLIDESHOW);
         backOne.setMaxWidth(NAVIGATE_SLIDESHOW);
-        navigateBackView.fitHeightProperty().bind(backOne.heightProperty());
+        backOne.setMinHeight(1000);
+        backOnePane.setLeftAnchor(navigateBackView, 0.0);
+        backOnePane.setRightAnchor(navigateBackView, 0.0);
+        backOnePane.setTopAnchor(navigateBackView, 0.0);
+        backOnePane.setBottomAnchor(navigateBackView,0.0);
+        //navigateBackView.fitHeightProperty().bind(backOnePane.heightProperty());
         navigateBackView.fitWidthProperty().bind(backOne.widthProperty());
         
-        
+        //Create and design button for navigating foward in the slideshow
         Image navigateForward = new Image("file:src/Resources/Navigateforward.png");
         ImageView navigateForwardView = new ImageView(navigateForward);
-        fowardOne.setGraphic(navigateForwardView);
-        fowardOne.prefHeightProperty().bind(photoPane.heightProperty());
-        fowardOne.setMinWidth(NAVIGATE_SLIDESHOW);
-        fowardOne.setMaxWidth(NAVIGATE_SLIDESHOW);
-        navigateForwardView.fitHeightProperty().bind(fowardOne.heightProperty());
-        navigateForwardView.fitWidthProperty().bind(fowardOne.widthProperty());
+        forwardOne.setGraphic(navigateForwardView);
+        forwardOnePane.setTopAnchor(forwardOne, 0.0);
+        forwardOnePane.setBottomAnchor(forwardOne, 0.0);
+        forwardOne.setMinWidth(NAVIGATE_SLIDESHOW);
+        forwardOne.setMaxWidth(NAVIGATE_SLIDESHOW);
+        forwardOne.setMinHeight(1000);
+        forwardOnePane.setLeftAnchor(navigateForwardView, 0.0);
+        forwardOnePane.setRightAnchor(navigateForwardView, 0.0);
+        forwardOnePane.setTopAnchor(navigateForwardView, 0.0);
+        forwardOnePane.setBottomAnchor(navigateForwardView,0.0);
+        //navigateForwardView.fitHeightProperty().bind(forwardOnePane.heightProperty());
+        navigateForwardView.fitWidthProperty().bind(forwardOne.widthProperty());
 
         photoViewer.fitWidthProperty().bind(photoPlayer.widthProperty());
         photoViewer.fitHeightProperty().bind(photoPlayer.heightProperty());
@@ -131,11 +147,13 @@ public class PhotoScreen implements SelectionMenu {
         photoViewer.setPreserveRatio(true);
 
         photoPlayer.getChildren().add(photoViewer);
-        photoPane.setLeft(backOne);
+        backOnePane.getChildren().add(backOne);
+        forwardOnePane.getChildren().add(forwardOne);
+        photoPane.setLeft(backOnePane);
         photoPane.setCenter(photoPlayer);
-        photoPane.setRight(fowardOne);
+        photoPane.setRight(forwardOnePane);
         
-        photoPane.setAlignment(photoPlayer, Pos.CENTER);
+        photoPlayer.setAlignment(Pos.CENTER);
         
         Randomize();
     }
@@ -235,9 +253,10 @@ public class PhotoScreen implements SelectionMenu {
 
         String selectedPath = playlist.get(photoNr);
         System.out.println(selectedPath + "Deze foto wordt afgespeeld.");
-        Image selectedPhoto = new Image(selectedPath, 500, 500, true, true);
+        Image selectedPhoto = new Image(selectedPath,1500,1000, true,true);
         System.out.println(selectedPhoto);
         photoViewer.setImage(selectedPhoto);
+        photoViewer.fitWidthProperty().bind(photoPlayer.widthProperty());
 
         this.tl = new Timeline(new KeyFrame(Duration.seconds(waitTime), (ActionEvent event) -> { 
         if (nextNr < playlist.size()) {
@@ -259,7 +278,7 @@ public class PhotoScreen implements SelectionMenu {
 
         });
 
-        fowardOne.setOnAction((ActionEvent event) -> {
+        forwardOne.setOnAction((ActionEvent event) -> {
             tl.stop();
             if (nextNr < playlist.size()) {
                 playSlideshow(playlist, nextNr);

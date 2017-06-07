@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -87,6 +88,8 @@ public class VideoScreen implements SelectionMenu {
     StackPane videoPane = new StackPane();
     BorderPane videoBorderPane = new BorderPane();
     VBox playButtons = new VBox();
+    
+    ArrayList <MediaPlayer> mediaviews= new ArrayList();
     
     public VideoScreen() {
 
@@ -229,11 +232,12 @@ public class VideoScreen implements SelectionMenu {
      */
     public void designButton(Button button, Label label, String fileLocation, String fileTitle) {
 
+        
         //Adds a mediaplayer that shows the video as a preview
         Media previewMedia = new Media(new File(fileLocation).toURI().toString());
         MediaPlayer previewPlayer = new MediaPlayer(previewMedia);
         MediaView previewViewer = new MediaView(previewPlayer);
-
+        mediaviews.add(previewPlayer);
         // changes the preview video to match the button size
         previewViewer.fitWidthProperty().bind(pickVideo1.widthProperty());
         previewViewer.setMediaPlayer(previewPlayer);
@@ -273,6 +277,12 @@ public class VideoScreen implements SelectionMenu {
 
     //Play video
     public void playVideo() {
+        
+        for (int i = 0; i < mediaviews.size(); i++) {
+                mediaviews.get(i).dispose();
+            }
+            mediaviews.clear();
+        
         videoPlayer.setOnEndOfMedia((new Runnable() {
                 @Override
                 public void run() {
@@ -290,6 +300,12 @@ public class VideoScreen implements SelectionMenu {
     * Stop the video from playing
     */
     public void stopVideo() {
+        
+        for (int i = 0; i < mediaviews.size(); i++) {
+                mediaviews.get(i).dispose();
+            }
+            mediaviews.clear();
+        
         videoPlayer.stop();
     }
 

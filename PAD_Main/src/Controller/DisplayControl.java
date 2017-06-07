@@ -41,45 +41,52 @@ public class DisplayControl {
                 IdleScreen.restartIdleTimer();
             }
         });
+        
+        borudoDisplay.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                IdleScreen.restartIdleTimer();
+            }
+        });
     }
 
     /**
      * Returns to the home screen
      */
     public static void setHomescreen() {
-        USERINTERFACE.setRight(null);
-        USERINTERFACE.setCenter(HOMESCREEN.getHomescreen());
-
+        
         PAD.setFullscreen();
         turnOffMedia();
+        
+        USERINTERFACE.setRight(null);
+        USERINTERFACE.setCenter(HOMESCREEN.getHomescreen());
     }
 
     /**
      * Access the photo functionality
      */
     public static void setPhotoMenu() {
+        PAD.setFullscreen();
+        turnOffMedia();
 
         USERINTERFACE.setRight(QUICKBAR.getQuickbar());
         USERINTERFACE.setCenter(PHOTOSCREEN.getPhotoScreen());
-        
-        PAD.setFullscreen();
-        turnOffMedia();
+
     }
-    
-    public static void playPhotoSlideshow(){
+
+    public static void playPhotoSlideshow() {
         USERINTERFACE.setCenter(PHOTOSCREEN.getPhotoPlayer());
-        
+
     }
 
     /**
      * Access the video functionality
      */
     public static void setVideoMenu() {
-
+        turnOffMedia();
         USERINTERFACE.setRight(QUICKBAR.getQuickbar());
         USERINTERFACE.setCenter(VIDEOSCREEN.getVideoScreen());
 
-        turnOffMedia();
     }
 
     //Plays Video
@@ -93,11 +100,11 @@ public class DisplayControl {
      * Access the music functionality
      */
     public static void setMusicMenu() {
-
+        turnOffMedia();
         USERINTERFACE.setRight(QUICKBAR.getQuickbar());
         USERINTERFACE.setCenter(MUSICSCREEN.getMusicScreen());
 
-        turnOffMedia();
+        
     }
 
     //Plays Music
