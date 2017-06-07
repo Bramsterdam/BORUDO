@@ -96,7 +96,7 @@ public class MusicScreen implements SelectionMenu {
         musicSelectionPane.setHgap(100);
         musicSelectionPane.setVgap(40);
 
-<<<<<<< HEAD
+
         //Sets the width and heigth of the playbuttons, also the font size
         Image playImage = new Image("file:src/Resources/play.png");
         Image pauseImage = new Image("file:src/Resources/pause.png");
@@ -114,10 +114,10 @@ public class MusicScreen implements SelectionMenu {
         //sets the button to full volume, instead of 0 volume and sets the width
         volumeSlider.setValue(100);
         volumeSlider.setMaxWidth(BUTTON_WIDTH / 2);
-=======
+
         //sets the button to full volume, instead of 0 volume
         volumeSlider.setValue(100);
->>>>>>> 3e809c2197a9aeebcc08386c060f027d4ee122f4
+
 
         //event for playing video
         play.setOnAction(e -> {
@@ -169,14 +169,10 @@ public class MusicScreen implements SelectionMenu {
         musicBorderPane.setCenter(musicPane);
 
         //Add nodes to the correct Panes
-<<<<<<< HEAD
+
         musicPane.setMargin(imageView, new Insets(0, 50, 0, 0));
         musicPane.getChildren().addAll((mediaView), (imageView));
         musicBorderPane.setMargin(playButtons, new Insets(0, 20, 0, 20));            
-=======
-        musicPane.setMargin(imageView, new Insets(0, 100, 0, 0));
-        musicPane.getChildren().addAll((playButtons), (mediaView), (imageView));
->>>>>>> 3e809c2197a9aeebcc08386c060f027d4ee122f4
 
         //Initialize selection menu
         Randomize();
