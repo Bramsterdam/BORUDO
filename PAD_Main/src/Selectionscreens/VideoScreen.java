@@ -1,6 +1,7 @@
 package Selectionscreens;
 
 import Controller.DisplayControl;
+import GUI.IdleScreen;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,6 +28,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import pad.PAD;
 
 /**
  *
@@ -244,14 +246,14 @@ public class VideoScreen implements SelectionMenu {
         previewPlayer.setAutoPlay(false);
 
         button.setOnAction((ActionEvent event) -> {
-
-            videoPlayer.setOnEndOfMedia((new Runnable() {
-                @Override
-                public void run() {
-                    videoPlayer.setAutoPlay(true);
-                    DisplayControl.setHomescreen();
-                }
-            }));
+            
+            
+            PAD.setFullscreen();
+            
+            IdleScreen.setPlayingTrue();
+            IdleScreen.stopIdleTimer();
+            
+            
 
             //Loads the correct video into the video players, then proceed to play the video
             Media media = new Media(new File(fileLocation).toURI().toString());
@@ -266,8 +268,17 @@ public class VideoScreen implements SelectionMenu {
 
     //Play video
     public void playVideo() {
+        videoPlayer.setOnEndOfMedia((new Runnable() {
+                @Override
+                public void run() {
+                    videoPlayer.setAutoPlay(true);
+                    DisplayControl.turnOffMedia();
+                    DisplayControl.setHomescreen();
+                }
+            }));
+        
         videoPlayer.play();
-        DisplayControl.stopIdleTimer();
+        IdleScreen.stopIdleTimer();
     }
 
    /**

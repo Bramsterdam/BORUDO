@@ -6,6 +6,7 @@
 package Selectionscreens;
 
 import Controller.DisplayControl;
+import GUI.IdleScreen;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -30,6 +31,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import pad.PAD;
 
 /**
  *
@@ -88,12 +90,13 @@ public class MusicScreen implements SelectionMenu {
      *
      */
     public MusicScreen() {
-
+        imageView.setImage(coverImage);
         //Sets spacing for the selection menu
         musicSelectionPane.setAlignment(Pos.CENTER);
         musicSelectionPane.setHgap(100);
         musicSelectionPane.setVgap(40);
 
+<<<<<<< HEAD
         //Sets the width and heigth of the playbuttons, also the font size
         Image playImage = new Image("file:src/Resources/play.png");
         Image pauseImage = new Image("file:src/Resources/pause.png");
@@ -111,6 +114,10 @@ public class MusicScreen implements SelectionMenu {
         //sets the button to full volume, instead of 0 volume and sets the width
         volumeSlider.setValue(100);
         volumeSlider.setMaxWidth(BUTTON_WIDTH / 2);
+=======
+        //sets the button to full volume, instead of 0 volume
+        volumeSlider.setValue(100);
+>>>>>>> 3e809c2197a9aeebcc08386c060f027d4ee122f4
 
         //event for playing video
         play.setOnAction(e -> {
@@ -162,9 +169,14 @@ public class MusicScreen implements SelectionMenu {
         musicBorderPane.setCenter(musicPane);
 
         //Add nodes to the correct Panes
+<<<<<<< HEAD
         musicPane.setMargin(imageView, new Insets(0, 50, 0, 0));
         musicPane.getChildren().addAll((mediaView), (imageView));
         musicBorderPane.setMargin(playButtons, new Insets(0, 20, 0, 20));            
+=======
+        musicPane.setMargin(imageView, new Insets(0, 100, 0, 0));
+        musicPane.getChildren().addAll((playButtons), (mediaView), (imageView));
+>>>>>>> 3e809c2197a9aeebcc08386c060f027d4ee122f4
 
         //Initialize selection menu
         Randomize();
@@ -259,6 +271,7 @@ public class MusicScreen implements SelectionMenu {
         System.out.println(cover);
         Image thumbnail = new Image(cover, 500, 500, true, false);
         ImageView thumbnailView = new ImageView(thumbnail);
+        System.out.println(thumbnail);
 
         //Changes the size of the button and makes it display the coverimage over the button
         button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -272,27 +285,61 @@ public class MusicScreen implements SelectionMenu {
 
         //Loads the correct video into the video players, then proceed to play the video
         thumbnailView.fitHeightProperty().bind(pickPlaylist1.heightProperty());
-
+        System.out.println("Nog niet gefaald");
         button.setOnAction((ActionEvent event) -> {
+
+            PAD.setFullscreen();
+            IdleScreen.stopIdleTimer();
+            IdleScreen.setPlayingTrue();
 
             //Displays the musicPlayer
             imageView.setImage(thumbnail);
-            Media media = new Media(new File(playlist.get(0)).toURI().toString());
-            musicPlayer = new MediaPlayer(media);
-            mediaView.setMediaPlayer(musicPlayer);
-
-            //start playing
-            musicPlayer.setAutoPlay(true);
             DisplayControl.playMusic();
+            playNextMusic(playlist, 0);
 
         });
-
     }
 
     /**
      * Start playing the music
      */
-    public void playMusic() {
+    public void playNextMusic(ArrayList<String> playlist, int songnr) {
+
+        System.out.println(songnr);
+
+        Media media = new Media(new File(playlist.get(songnr)).toURI().toString());
+        musicPlayer = new MediaPlayer(media);
+        mediaView.setMediaPlayer(musicPlayer);
+
+        musicPlayer.setAutoPlay(true);
+
+        int nextSong = songnr + 1;
+        System.out.println(nextSong);
+
+        if (nextSong < playlist.size()) {
+            musicPlayer.setOnEndOfMedia(new Runnable() {
+                @Override
+                public void run() {
+                    if (IdleScreen.playing == true) {
+                        playNextMusic(playlist, nextSong);
+
+                    } else {
+                        DisplayControl.turnOffMedia();
+                        DisplayControl.setHomescreen();
+                    }
+                }
+            });
+
+        } else {
+            musicPlayer.setOnEndOfMedia(new Runnable() {
+                @Override
+                public void run() {
+                    DisplayControl.turnOffMedia();
+                    DisplayControl.setHomescreen();
+                }
+            });
+        }
+
         musicPlayer.play();
     }
 
@@ -301,7 +348,7 @@ public class MusicScreen implements SelectionMenu {
      */
     public void stopMusic() {
         musicPlayer.stop();
-        DisplayControl.stopIdleTimer();
+
     }
 
     /**
