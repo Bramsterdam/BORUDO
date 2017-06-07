@@ -111,6 +111,9 @@ public class VideoManagement extends ManagementScreen {
         addVideoPane.add(infoLocation, 0, 3);
         addVideoPane.add(lbLocation, 0, 4, 3, 1);
         addVideoPane.add(searchButton, 1, 5);
+        
+        // remover
+         removeButton.setFont(new Font("Arial", 25));
 
         //Section: File information
         addVideoPane.add(lbTitle, 0, 8);

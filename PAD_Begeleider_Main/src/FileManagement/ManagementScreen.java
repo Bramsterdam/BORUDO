@@ -17,7 +17,10 @@ import javafx.scene.control.ListView;
 public class ManagementScreen {
     
     Button addButton = new Button("Toevoegen");
-    Button removeButton = new Button("Selectie verwijderen") ;
+    
+    Button removeButton = new Button("Selectie verwijderen");
+   
+        
     ListView listview = new ListView();
     Label lbLocation = new Label();
     Button searchButton = new Button();

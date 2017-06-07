@@ -84,6 +84,7 @@ public class MusicManagement extends ManagementScreen {
     public static ObservableList<Songs> olMusic = FXCollections.observableArrayList();
     TableView<Songs> musicTableView = new TableView<>();
     Button removeButton = new Button("Selectie verwijderen");
+   
 
     public MusicManagement() {
 
@@ -128,6 +129,9 @@ public class MusicManagement extends ManagementScreen {
         cbPlaylist.setEditable(true);
         cbPlaylist.prefWidthProperty().bind(addMusicPane.widthProperty());
         cbPlaylist.setPromptText(defaultCbPlaylist);
+        
+        //button beschrijving
+         removeButton.setFont(new Font("Arial", 25));
 
         //Creates the pop-up window to choose a file, sets the type of file also
         fileChooser = new FileChooser();

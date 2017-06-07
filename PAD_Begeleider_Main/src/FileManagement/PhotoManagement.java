@@ -118,6 +118,8 @@ public class PhotoManagement extends ManagementScreen {
         cbCategory.prefWidthProperty().bind(addPhotoPane.widthProperty());
         cbCategory.setEditable(true);
         cbCategory.setPromptText(defaultCbCategory);
+        // remover
+        removeButton.setFont(new Font("Arial", 25));
 
         //Creates the pop-up window to choose a file, sets the type of file also
         fileChooser = new FileChooser();
