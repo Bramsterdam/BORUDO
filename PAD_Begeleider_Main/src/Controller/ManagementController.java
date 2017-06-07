@@ -49,7 +49,7 @@ public class ManagementController {
     public static Button setPhotoButton = new Button("Foto's");
 
     private Scene managementApplication = new Scene(managementPane, 3500, 3500);
-    private StackPane stackPane;
+    private StackPane informationPane;
 
 
     public ManagementController() {
@@ -75,35 +75,40 @@ public class ManagementController {
 
         //Set spacing for button is quickbar
         setMusicButton.prefWidthProperty().bind(managementQuickbar.widthProperty().divide(3));
+        setMusicButton.setMinHeight(50);
         setVideoButton.prefWidthProperty().bind(managementQuickbar.widthProperty().divide(3));
+        setVideoButton.setMinHeight(50);
         setPhotoButton.prefWidthProperty().bind(managementQuickbar.widthProperty().divide(3));
+        setPhotoButton.setMinHeight(50);
         
         managementQuickbar.getChildren().addAll(setMusicButton, setVideoButton, setPhotoButton);
         managementQuickbar.setPadding(new Insets(30, 0, 30, 0));
         managementPane.setTop(managementQuickbar);
         // labels
-        Label Label = new Label("Welkom bij de begeleiders applicatie");
-        Label Label1 = new Label(Beschrijving);
-        Label Label2 = new Label("");
+        Label welcomeLabel = new Label("Welkom bij de begeleiders applicatie");
+        Label descriptionLabel = new Label(Beschrijving);
+        Label amstaImageLabel = new Label("");
         
-        Label2.setPadding(new Insets(200,200,300,300));
-        Label2.setTextFill(Color.web("#0076a3"));
-        Image image = new Image(getClass().getResourceAsStream("amsta.png"));
-        Label2.setGraphic(new ImageView(image));
+        amstaImageLabel.setPadding(new Insets(200,200,300,300));
+        amstaImageLabel.setTextFill(Color.web("#0076a3"));
+        Image image = new Image("file:src/Resources/amsta.png");
+        ImageView test = new ImageView(image);
+        amstaImageLabel.setGraphic(test);
        
-        Label.setPadding(new Insets(100,100,370,100));
-        Label1.setPadding(new Insets(100,100,-370,100));
-        Label.setFont(new Font("Tahoma", 55));
-        Label1.setFont(new Font("Tahoma", 55));
+        welcomeLabel.setPadding(new Insets(100,100,370,100));
+        descriptionLabel.setPadding(new Insets(100,100,-370,100));
+        welcomeLabel.setFont(new Font("Tahoma", 55));
+        descriptionLabel.setFont(new Font("Tahoma", 55));
       
-        //stackpanes
-        stackPane.getChildren().add(Label2);
-        stackPane.getChildren().add(Label);
-        stackPane.getChildren().add(Label1);
+//        //stackpanes
+//        informationPane.getChildren().add(amstaImageLabel);
+//        informationPane.getChildren().add(welcomeLabel);
+//        informationPane.getChildren().add(descriptionLabel);
         
-        startupPane.add(Label2, 1, 1, 1,1 );
-        startupPane.add(Label, 0, 0, 3, 1);
-        startupPane.add(Label1, 0, 0, 3, 1);
+        startupPane.add(test, 1, 1, 1,1 );
+        startupPane.add(welcomeLabel, 0, 0, 3, 1);
+        startupPane.add(descriptionLabel, 0, 0, 3, 1);
+        managementPane.setCenter(startupPane);
     }
      // beschrijving 
      private static final String Beschrijving = 

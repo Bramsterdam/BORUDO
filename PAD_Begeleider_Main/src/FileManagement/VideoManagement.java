@@ -169,6 +169,7 @@ public class VideoManagement extends ManagementScreen {
             
         });
         
+        removeButton.setMinHeight(50);
         removeButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
