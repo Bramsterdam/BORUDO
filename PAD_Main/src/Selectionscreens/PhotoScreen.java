@@ -7,21 +7,15 @@ package Selectionscreens;
 
 import Controller.DisplayControl;
 import GUI.IdleScreen;
-import static GUI.IdleScreen.setIdleScreen;
-import java.awt.Color;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,14 +23,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.Timer;
+import pad.PAD;
 
 /**
  *
@@ -46,8 +34,10 @@ public class PhotoScreen implements SelectionMenu {
 
     Connection connection;
 
-    Timeline tl = new Timeline();
-
+    
+    Timeline tl;
+    int waitTime = 20;
+    
     final int BUTTON_WIDTH = 500;
     final int BUTTON_HEIGHT = 430;
 
@@ -71,8 +61,8 @@ public class PhotoScreen implements SelectionMenu {
     Label[] photoLabels = {titleSlideShow1, titleSlideShow2, titleSlideShow3, titleSlideShow4, titleSlideShow5, titleSlideShow6};
     Button[] photoButtons = {pickSlideShow1, pickSlideShow2, pickSlideShow3, pickSlideShow4, pickSlideShow5, pickSlideShow6};
 
-    Image testphoto = new Image("file:src\\Resources\\Fotos\\Amsterdam(6).jpg");
-    ImageView photoViewer = new ImageView();
+    Image testphoto = new Image("file:src/Resources/Music/cover/Anberlin.jpg", 500, 500, true, false);
+    ImageView photoViewer = new ImageView(testphoto);
 
     GridPane photoSelectionPane = new GridPane();
     HBox photoPane = new HBox();
@@ -81,7 +71,7 @@ public class PhotoScreen implements SelectionMenu {
 
     public PhotoScreen() {
         photoViewer.setImage(testphoto);
-        
+
         //Sets spacing for the selection menu
         photoSelectionPane.setAlignment(Pos.CENTER);
         photoSelectionPane.setHgap(35);
@@ -114,12 +104,12 @@ public class PhotoScreen implements SelectionMenu {
         fowardOne.prefHeightProperty().bind(photoPane.heightProperty());
 
         photoViewer.fitHeightProperty().bind(photoPane.heightProperty());
+        photoViewer.prefWidth(BUTTON_HEIGHT);
         photoViewer.setPreserveRatio(true);
 
         photoPane.setAlignment(Pos.CENTER);
         photoPane.getChildren().addAll(backOne, photoViewer, fowardOne);
 
-        Randomize();
     }
 
     /**
@@ -178,16 +168,18 @@ public class PhotoScreen implements SelectionMenu {
     public void designButton(Button button, Label label, String playlistTitle, ArrayList<String> slideshow) {
 
         //Creates and image for the coverpicture to place over the button
-        String cover = slideshow.get(0);
+        String cover = "file:src\\Resources\\Music\\cover\\Anberlin.jpg";
         System.out.println(cover + "Dit is de cover");
-        Image thumbnail = new Image(cover);
-        ImageView thumbnailView = new ImageView(thumbnail);
-        button.setGraphic(thumbnailView);
+        Image thumbnail = new Image(cover, 500, 500, true, false);
+        ImageView thumbnailViewer = new ImageView();
+        button.setGraphic(thumbnailViewer);
+        thumbnailViewer.setImage(thumbnail);
 
         //Changes the size of the button and makes it display the coverimage over the button
         button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         button.setMaxSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        thumbnailView.fitHeightProperty().bind(pickSlideShow1.heightProperty());
+
+        thumbnailViewer.fitHeightProperty().bind(pickSlideShow1.heightProperty());
 
         //Adds file info to the button
         label.setText(playlistTitle);
@@ -195,6 +187,7 @@ public class PhotoScreen implements SelectionMenu {
         //Loads the correct video into the video players, then proceed to play the video
         button.setOnAction((ActionEvent event) -> {
 
+            PAD.setFullscreen();
             DisplayControl.playPhotoSlideshow();
 
             playSlideshow(slideshow, 0);
@@ -209,31 +202,37 @@ public class PhotoScreen implements SelectionMenu {
     public void playSlideshow(ArrayList<String> playlist, int photoNr) {
         System.out.println("De playlist speelt af");
         int currentNr = photoNr;
-        int nextNr = (photoNr+1);
+        int nextNr = (photoNr + 1);
         System.out.println(nextNr);
 
         String selectedPath = playlist.get(photoNr);
         System.out.println(selectedPath + "Deze foto wordt afgespeeld.");
-        Image selectedPhoto = new Image("file:src\\Resources\\Fotos\\Amsterdam(6).jpg");
+        Image selectedPhoto = new Image("file:src/Resources/Music/cover/Anberlin.jpg", 500, 500, true, false);
         System.out.println(selectedPhoto);
         photoViewer.setImage(selectedPhoto);
 
-//        KeyFrame setNext = new KeyFrame(Duration.seconds(2000), (ActionEvent event) -> {
-//            if (nextNr < playlist.size()) {playSlideshow(playlist, nextNr);}
-//        });
-//        
-//
-//        tl.getKeyFrames().clear();
-//        tl.getKeyFrames().add(setNext);
-//        tl.play();
+        this.tl = new Timeline(new KeyFrame(Duration.seconds(waitTime), (ActionEvent event) -> { 
+        if (nextNr < playlist.size()) {
+            playSlideshow(playlist, nextNr);
+        } else {
+            DisplayControl.turnOffMedia();
+            DisplayControl.setHomescreen();
+        }
+        }));
+        
+        
+        tl.play();
+
         backOne.setOnAction((ActionEvent event) -> {
             if (currentNr > 0) {
+                tl.stop();
                 playSlideshow(playlist, (currentNr - 1));
             }
 
         });
 
         fowardOne.setOnAction((ActionEvent event) -> {
+            tl.stop();
             if (nextNr < playlist.size()) {
                 playSlideshow(playlist, nextNr);
             } else {

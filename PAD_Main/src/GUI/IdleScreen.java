@@ -13,35 +13,45 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import static GUI.IdleScreen.idleStage;
 import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Screen;
 
 /**
  *
  * @author $Iwan Snapper
  */
 public class IdleScreen {
+    
+    private static int timeBeforeIdle = 15;
+    
+    private static final Timeline idleTimeline = new Timeline(new KeyFrame(
+            Duration.minutes(timeBeforeIdle),
+            ae -> setIdleScreen()));
 
     public static boolean playing = false;
 
+    private StackPane idlePane = new StackPane();
+    public Scene idleScene = new Scene(idlePane, 5000, 3500);
     public static Stage idleStage = new Stage();
 
-    private static final StackPane idleScreen = new StackPane();
-    private static final Timeline idleTimeline = new Timeline(new KeyFrame(
-            Duration.millis(20000),
-            ae -> setIdleScreen()));
-    public static Scene idleScene = new Scene(idleScreen, 3500, 3500);
+    Label test = new Label("Hoi");
 
-    IdleScreen() {
+    public IdleScreen() {
+
+        idleStage.show();
         idleStage.setMaximized(true);
-        idleStage.setResizable(false);
         idleStage.setAlwaysOnTop(true);
-        idleScreen.prefHeightProperty().bind(idleStage.heightProperty());
-        idleScreen.prefWidthProperty().bind(idleStage.widthProperty());
+        idleStage.setResizable(false);
+        idleStage.setFullScreen(true);
+        idlePane.getChildren().add(test);
         idleStage.setTitle("Second stage");
         idleStage.setScene(idleScene);
 
+
         //Set action everytime the mouse is moved over the screen.
-        idleScene.addEventFilter(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
+        idleScene.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 IdleScreen.restartIdleTimer();
@@ -50,8 +60,8 @@ public class IdleScreen {
     }
 
     public static void setIdleScreen() {
-        idleStage.setMaximized(true);
         idleStage.show();
+        
     }
 
     public static void restartIdleTimer() {

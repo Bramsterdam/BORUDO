@@ -23,6 +23,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import pad.PAD;
 
 /**
  *
@@ -227,6 +228,9 @@ public class VideoScreen implements SelectionMenu {
         previewPlayer.setAutoPlay(false);
 
         button.setOnAction((ActionEvent event) -> {
+            
+            
+            PAD.setFullscreen();
             
             IdleScreen.setPlayingTrue();
             IdleScreen.stopIdleTimer();

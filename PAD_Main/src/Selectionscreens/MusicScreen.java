@@ -30,6 +30,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import pad.PAD;
 
 /**
  *
@@ -261,6 +262,7 @@ public class MusicScreen implements SelectionMenu {
         System.out.println("Nog niet gefaald");
         button.setOnAction((ActionEvent event) -> {
 
+            PAD.setFullscreen();
             IdleScreen.stopIdleTimer();
             IdleScreen.setPlayingTrue();
 

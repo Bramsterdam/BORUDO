@@ -18,6 +18,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import pad.PAD;
 
 /**
  *
@@ -37,7 +38,7 @@ public class DisplayControl {
     private static PhotoScreen photoscreen = new PhotoScreen();
 
     //Full Application
-    public static Scene borudoDisplay = new Scene(UserInterface, 3500, 3500);
+    public static Scene borudoDisplay = new Scene(UserInterface, 3000, 3000);
 
     public DisplayControl() {
 
@@ -57,6 +58,7 @@ public class DisplayControl {
         UserInterface.setRight(null);
         UserInterface.setCenter(homescreen.getHomescreen());
 
+        PAD.setFullscreen();
         turnOffMedia();
     }
 
@@ -67,7 +69,8 @@ public class DisplayControl {
 
         UserInterface.setRight(quickbar.getQuickbar());
         UserInterface.setCenter(photoscreen.getPhotoScreen());
-
+        
+        PAD.setFullscreen();
         turnOffMedia();
     }
     
