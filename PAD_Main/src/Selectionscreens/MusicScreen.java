@@ -91,6 +91,7 @@ public class MusicScreen implements SelectionMenu {
      */
     public MusicScreen() {
         imageView.setImage(coverImage);
+        
         //Sets spacing for the selection menu
         musicSelectionPane.setAlignment(Pos.CENTER);
         musicSelectionPane.setHgap(100);

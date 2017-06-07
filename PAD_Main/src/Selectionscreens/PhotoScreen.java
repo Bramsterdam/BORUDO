@@ -21,8 +21,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import pad.PAD;
 
@@ -34,12 +36,14 @@ public class PhotoScreen implements SelectionMenu {
 
     Connection connection;
 
-    
+    //Timeline with how long every picture stays on screen
     Timeline tl;
     int waitTime = 20;
     
+    //Set button size
     final int BUTTON_WIDTH = 500;
     final int BUTTON_HEIGHT = 430;
+    final int NAVIGATE_SLIDESHOW = 150;
 
     //Buttons and labels
     Button pickSlideShow1 = new Button();
@@ -61,15 +65,18 @@ public class PhotoScreen implements SelectionMenu {
     Label[] photoLabels = {titleSlideShow1, titleSlideShow2, titleSlideShow3, titleSlideShow4, titleSlideShow5, titleSlideShow6};
     Button[] photoButtons = {pickSlideShow1, pickSlideShow2, pickSlideShow3, pickSlideShow4, pickSlideShow5, pickSlideShow6};
 
+    //Initialize photoplayer
     Image testphoto = new Image("file:src/Resources/Music/cover/Anberlin.jpg", 500, 500, true, false);
     ImageView photoViewer = new ImageView(testphoto);
 
     GridPane photoSelectionPane = new GridPane();
-    HBox photoPane = new HBox();
+    BorderPane photoPane = new BorderPane();
+    StackPane photoPlayer = new StackPane();
     Button backOne = new Button();
     Button fowardOne = new Button();
 
     public PhotoScreen() {
+        
         photoViewer.setImage(testphoto);
 
         //Sets spacing for the selection menu
@@ -97,19 +104,33 @@ public class PhotoScreen implements SelectionMenu {
         photoSelectionPane.add(titleSlideShow6, 5, 3);
 
         photoSelectionPane.setStyle("-fx-background-color:#FFB266");
-
         photoPane.setStyle("-fx-background-color:#000000");
 
+        Image navigateBack = new Image("file:src/Resources/Navigateback.jpg");
+        ImageView navigateBackView = new ImageView(navigateBack);
+        backOne.setGraphic(navigateBackView);
         backOne.prefHeightProperty().bind(photoPane.heightProperty());
+        backOne.setMinWidth(NAVIGATE_SLIDESHOW);
+        backOne.setMaxWidth(NAVIGATE_SLIDESHOW);
+        
+        Image navigateForward = new Image("file:src/Resources/Navigateforward.jpg");
+        ImageView navigateForwardView = new ImageView(navigateForward);
+        backOne.setGraphic(navigateForwardView);
         fowardOne.prefHeightProperty().bind(photoPane.heightProperty());
+        fowardOne.setMinWidth(NAVIGATE_SLIDESHOW);
+        fowardOne.setMaxWidth(NAVIGATE_SLIDESHOW);
 
-        photoViewer.fitHeightProperty().bind(photoPane.heightProperty());
+        photoViewer.fitWidthProperty().bind(photoPlayer.widthProperty());
         photoViewer.prefWidth(BUTTON_HEIGHT);
         photoViewer.setPreserveRatio(true);
 
-        photoPane.setAlignment(Pos.CENTER);
-        photoPane.getChildren().addAll(backOne, photoViewer, fowardOne);
-
+        
+        photoPlayer.getChildren().add(photoViewer);
+        photoPane.setLeft(backOne);
+        photoPane.setCenter(photoPlayer);
+        photoPane.setRight(fowardOne);
+        
+        Randomize();
     }
 
     /**
@@ -168,7 +189,7 @@ public class PhotoScreen implements SelectionMenu {
     public void designButton(Button button, Label label, String playlistTitle, ArrayList<String> slideshow) {
 
         //Creates and image for the coverpicture to place over the button
-        String cover = "file:src\\Resources\\Music\\cover\\Anberlin.jpg";
+        String cover = slideshow.get(0);
         System.out.println(cover + "Dit is de cover");
         Image thumbnail = new Image(cover, 500, 500, true, false);
         ImageView thumbnailViewer = new ImageView();
@@ -244,7 +265,7 @@ public class PhotoScreen implements SelectionMenu {
     }
 
     public void stopSlideshow() {
-
+        
     }
 
     /**
@@ -263,7 +284,7 @@ public class PhotoScreen implements SelectionMenu {
      *
      * @return slideshow viewer
      */
-    public HBox getPhotoPlayer() {
+    public BorderPane getPhotoPlayer() {
 
         return photoPane;
     }

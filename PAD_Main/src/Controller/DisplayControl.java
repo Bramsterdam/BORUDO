@@ -6,18 +6,10 @@ import GUI.Quickbar;
 import Selectionscreens.MusicScreen;
 import Selectionscreens.PhotoScreen;
 import Selectionscreens.VideoScreen;
-import java.util.Timer;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-import javafx.util.Duration;
 import pad.PAD;
 
 /**
@@ -30,15 +22,15 @@ import pad.PAD;
  */
 public class DisplayControl {
 
-    private static Homescreen homescreen = new Homescreen();
-    private static BorderPane UserInterface = new BorderPane();
-    private static Quickbar quickbar = new Quickbar();
-    private static VideoScreen videoscreen = new VideoScreen();
-    private static MusicScreen musicscreen = new MusicScreen();
-    private static PhotoScreen photoscreen = new PhotoScreen();
+    private static final Homescreen HOMESCREEN = new Homescreen();
+    private static final BorderPane USERINTERFACE = new BorderPane();
+    private static final Quickbar QUICKBAR = new Quickbar();
+    private static final VideoScreen VIDEOSCREEN = new VideoScreen();
+    private static final MusicScreen MUSICSCREEN = new MusicScreen();
+    private static final PhotoScreen PHOTOSCREEN = new PhotoScreen();
 
     //Full Application
-    public static Scene borudoDisplay = new Scene(UserInterface, 3000, 3000);
+    public static Scene borudoDisplay = new Scene(USERINTERFACE, 3000, 3000);
 
     public DisplayControl() {
 
@@ -55,8 +47,8 @@ public class DisplayControl {
      * Returns to the home screen
      */
     public static void setHomescreen() {
-        UserInterface.setRight(null);
-        UserInterface.setCenter(homescreen.getHomescreen());
+        USERINTERFACE.setRight(null);
+        USERINTERFACE.setCenter(HOMESCREEN.getHomescreen());
 
         PAD.setFullscreen();
         turnOffMedia();
@@ -67,15 +59,15 @@ public class DisplayControl {
      */
     public static void setPhotoMenu() {
 
-        UserInterface.setRight(quickbar.getQuickbar());
-        UserInterface.setCenter(photoscreen.getPhotoScreen());
+        USERINTERFACE.setRight(QUICKBAR.getQuickbar());
+        USERINTERFACE.setCenter(PHOTOSCREEN.getPhotoScreen());
         
         PAD.setFullscreen();
         turnOffMedia();
     }
     
     public static void playPhotoSlideshow(){
-        UserInterface.setCenter(photoscreen.getPhotoPlayer());
+        USERINTERFACE.setCenter(PHOTOSCREEN.getPhotoPlayer());
         
     }
 
@@ -84,8 +76,8 @@ public class DisplayControl {
      */
     public static void setVideoMenu() {
 
-        UserInterface.setRight(quickbar.getQuickbar());
-        UserInterface.setCenter(videoscreen.getVideoScreen());
+        USERINTERFACE.setRight(QUICKBAR.getQuickbar());
+        USERINTERFACE.setCenter(VIDEOSCREEN.getVideoScreen());
 
         turnOffMedia();
     }
@@ -93,8 +85,8 @@ public class DisplayControl {
     //Plays Video
     public static void playVideo() {
 
-        UserInterface.setCenter(videoscreen.getVideoPlayer());
-        videoscreen.playVideo();
+        USERINTERFACE.setCenter(VIDEOSCREEN.getVideoPlayer());
+        VIDEOSCREEN.playVideo();
     }
 
     /**
@@ -102,8 +94,8 @@ public class DisplayControl {
      */
     public static void setMusicMenu() {
 
-        UserInterface.setRight(quickbar.getQuickbar());
-        UserInterface.setCenter(musicscreen.getMusicScreen());
+        USERINTERFACE.setRight(QUICKBAR.getQuickbar());
+        USERINTERFACE.setCenter(MUSICSCREEN.getMusicScreen());
 
         turnOffMedia();
     }
@@ -111,7 +103,7 @@ public class DisplayControl {
     //Plays Music
     public static void playMusic() {
 
-        UserInterface.setCenter(musicscreen.getMusicPlayer());
+        USERINTERFACE.setCenter(MUSICSCREEN.getMusicPlayer());
     }
 
     //Turns of all media
@@ -121,9 +113,9 @@ public class DisplayControl {
         IdleScreen.setPlayingFalse();
         IdleScreen.restartIdleTimer();
         //Stop all media
-        musicscreen.stopMusic();
-        videoscreen.stopVideo();
-        photoscreen.stopSlideshow();
+        MUSICSCREEN.stopMusic();
+        VIDEOSCREEN.stopVideo();
+        PHOTOSCREEN.stopSlideshow();
 
     }
 
