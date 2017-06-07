@@ -38,7 +38,7 @@ public class IdleScherm extends Application {
         Label label = new Label("U bevind zich op het Idle scherm ");
         Label label2 = new Label("Beweeg met u muis om verder te gaan waar u gebleven was");
         Label label1 = new Label("");
-        Image image = new Image(getClass().getResourceAsStream("amsta.png"));
+        Image image = new Image("file:src/Resources/amsta.png");
         label1.setGraphic(new ImageView(image));
         label1.setTextFill(Color.web("#0076a3"));
         

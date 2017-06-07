@@ -272,7 +272,7 @@ public class MusicScreen implements SelectionMenu {
 
         //Creates and image for the coverpicture to place over the button
         System.out.println(cover);
-        Image thumbnail = new Image(cover, 500, 500, true, false);
+        Image thumbnail = new Image(cover, 500, 500, true, true);
         ImageView thumbnailView = new ImageView(thumbnail);
         System.out.println(thumbnail);
 

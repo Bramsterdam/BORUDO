@@ -66,7 +66,7 @@ public class PhotoScreen implements SelectionMenu {
     Button[] photoButtons = {pickSlideShow1, pickSlideShow2, pickSlideShow3, pickSlideShow4, pickSlideShow5, pickSlideShow6};
 
     //Initialize photoplayer
-    Image testphoto = new Image("file:src/Resources/Music/cover/Anberlin.jpg", 500, 500, true, false);
+    Image testphoto = new Image("file:src/Resources/Music/cover/Anberlin.png", 500, 500, true, true);
     ImageView photoViewer = new ImageView(testphoto);
 
     GridPane photoSelectionPane = new GridPane();
@@ -106,29 +106,36 @@ public class PhotoScreen implements SelectionMenu {
         photoSelectionPane.setStyle("-fx-background-color:#FFB266");
         photoPane.setStyle("-fx-background-color:#000000");
 
-        Image navigateBack = new Image("file:src/Resources/Navigateback.jpg");
+        Image navigateBack = new Image("file:src/Resources/Navigateback.png");
         ImageView navigateBackView = new ImageView(navigateBack);
         backOne.setGraphic(navigateBackView);
         backOne.prefHeightProperty().bind(photoPane.heightProperty());
         backOne.setMinWidth(NAVIGATE_SLIDESHOW);
         backOne.setMaxWidth(NAVIGATE_SLIDESHOW);
+        navigateBackView.fitHeightProperty().bind(backOne.heightProperty());
+        navigateBackView.fitWidthProperty().bind(backOne.widthProperty());
         
-        Image navigateForward = new Image("file:src/Resources/Navigateforward.jpg");
+        
+        Image navigateForward = new Image("file:src/Resources/Navigateforward.png");
         ImageView navigateForwardView = new ImageView(navigateForward);
-        backOne.setGraphic(navigateForwardView);
+        fowardOne.setGraphic(navigateForwardView);
         fowardOne.prefHeightProperty().bind(photoPane.heightProperty());
         fowardOne.setMinWidth(NAVIGATE_SLIDESHOW);
         fowardOne.setMaxWidth(NAVIGATE_SLIDESHOW);
+        navigateForwardView.fitHeightProperty().bind(fowardOne.heightProperty());
+        navigateForwardView.fitWidthProperty().bind(fowardOne.widthProperty());
 
         photoViewer.fitWidthProperty().bind(photoPlayer.widthProperty());
+        photoViewer.fitHeightProperty().bind(photoPlayer.heightProperty());
         photoViewer.prefWidth(BUTTON_HEIGHT);
         photoViewer.setPreserveRatio(true);
 
-        
         photoPlayer.getChildren().add(photoViewer);
         photoPane.setLeft(backOne);
         photoPane.setCenter(photoPlayer);
         photoPane.setRight(fowardOne);
+        
+        photoPane.setAlignment(photoPlayer, Pos.CENTER);
         
         Randomize();
     }
@@ -228,7 +235,7 @@ public class PhotoScreen implements SelectionMenu {
 
         String selectedPath = playlist.get(photoNr);
         System.out.println(selectedPath + "Deze foto wordt afgespeeld.");
-        Image selectedPhoto = new Image("file:src/Resources/Music/cover/Anberlin.jpg", 500, 500, true, false);
+        Image selectedPhoto = new Image(selectedPath, 500, 500, true, true);
         System.out.println(selectedPhoto);
         photoViewer.setImage(selectedPhoto);
 
@@ -265,7 +272,9 @@ public class PhotoScreen implements SelectionMenu {
     }
 
     public void stopSlideshow() {
-        
+        if(IdleScreen.getPlaying()== true){
+        tl.stop();
+        }
     }
 
     /**

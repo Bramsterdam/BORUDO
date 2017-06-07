@@ -110,4 +110,7 @@ public class IdleScreen {
         playing = true;
         idleTimeline.stop();
     }
+    public static boolean getPlaying(){
+        return playing;
+    }
 }
