@@ -50,7 +50,6 @@ public class PhotoManagement extends ManagementScreen {
 
     Connection connection;
 
-    //Add a filechooser for adding new Images
     private FileChooser fileChooser;
     private File file;
     private final Desktop desktop = Desktop.getDesktop();
@@ -62,7 +61,7 @@ public class PhotoManagement extends ManagementScreen {
     VBox photoOverview = new VBox();
     GridPane addPhotoPane = new GridPane();
 
-    //Selecting files
+    //Bestand zoeken
     Label lbPhotoManagement = new Label("Foto's toevoegen");
     Label infoLocation = new Label("Selecteer het bestand om toe te voegen");
     Button searchButton = new Button("Bestand zoeken");
@@ -70,7 +69,8 @@ public class PhotoManagement extends ManagementScreen {
     Label lbLocation = new Label(defaultNoFile);
     String selectedFile = "";
 
-    //Add new Category
+    //Add new Categroy
+    //Bestan Toevoegen
     Label lbTitle = new Label("Titel");
     TextField tfTitle = new TextField();
     String defaultTfTitle = "Geef de foto een title";
@@ -79,20 +79,18 @@ public class PhotoManagement extends ManagementScreen {
     String defaultCbCategory = "Voeg toe aan bestaande categorie of voeg nieuwe toe";
     Button addButton = new Button("Toevoegen");
 
-    //Add listView for displaying all images
+    //Listview aanpassen en selecteren
     ObservableList<Photos> olPhoto = FXCollections.observableArrayList();
     TableView<Photos> photoTableView = new TableView<>();
     Button removeButton = new Button("Selectie verwijderen");
 
     public PhotoManagement() {
 
-        //Section Image overview displays tableview and remove button
         photoOverview.getChildren().addAll(photoTableView, removeButton);
 
         removeButton.prefWidthProperty().bind(photoTableView.widthProperty());
         TableViewSetup();
 
-        //Section Add file information
         addPhotoPane.setAlignment(Pos.CENTER);
         addPhotoPane.setVgap(5);
         addPhotoPane.setPadding(new Insets(30, 30, 30, 30));
@@ -127,7 +125,6 @@ public class PhotoManagement extends ManagementScreen {
                 new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg")
         );
 
-        //Searchbutton for selecting a new file
         searchButton.setOnAction(e -> {
             //button event that triggers fileschooser and retrieves the pathfile
             file = fileChooser.showOpenDialog(searchButton.getScene().getWindow());
@@ -138,17 +135,17 @@ public class PhotoManagement extends ManagementScreen {
             }
         });
 
-        //AddButton for adding file to the database
         addButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
 
-                //Add information to the proper SQL query
+                /**
+                 * Try catch implementeren
+                 */
                 SQL.AddPhoto(selectedFile,
                         tfTitle.getText(),
                         cbCategory.getSelectionModel().getSelectedItem().toString());
-                
-                //Update application
+
                 reset();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information Dialog");
@@ -158,7 +155,6 @@ public class PhotoManagement extends ManagementScreen {
             }
         });
 
-        //Remove button for removing file from the database
         removeButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

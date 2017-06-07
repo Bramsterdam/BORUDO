@@ -15,14 +15,20 @@ import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.geometry.Pos;
+
 
 /**
  *
@@ -43,6 +49,8 @@ public class ManagementController {
     public static Button setPhotoButton = new Button("Foto's");
 
     private Scene managementApplication = new Scene(managementPane, 3500, 3500);
+    private StackPane stackPane;
+
 
     public ManagementController() {
 
@@ -73,11 +81,38 @@ public class ManagementController {
         managementQuickbar.getChildren().addAll(setMusicButton, setVideoButton, setPhotoButton);
         managementQuickbar.setPadding(new Insets(30, 0, 30, 0));
         managementPane.setTop(managementQuickbar);
-        managementPane.setCenter(startupPane);
-        startupPane.setAlignment(Pos.CENTER);
-        Label test = new Label("Hoi");
-        startupPane.add(test, 0, 0, 3, 1);
+        // labels
+        Label Label = new Label("Welkom bij de begeleiders applicatie");
+        Label Label1 = new Label(Beschrijving);
+        Label Label2 = new Label("");
+        
+        Label2.setPadding(new Insets(200,200,300,300));
+        Label2.setTextFill(Color.web("#0076a3"));
+        Image image = new Image(getClass().getResourceAsStream("amsta.png"));
+        Label2.setGraphic(new ImageView(image));
+       
+        Label.setPadding(new Insets(100,100,370,100));
+        Label1.setPadding(new Insets(100,100,-370,100));
+        Label.setFont(new Font("Tahoma", 55));
+        Label1.setFont(new Font("Tahoma", 55));
+      
+        //stackpanes
+        stackPane.getChildren().add(Label2);
+        stackPane.getChildren().add(Label);
+        stackPane.getChildren().add(Label1);
+        
+        startupPane.add(Label2, 1, 1, 1,1 );
+        startupPane.add(Label, 0, 0, 3, 1);
+        startupPane.add(Label1, 0, 0, 3, 1);
     }
+     // beschrijving 
+     private static final String Beschrijving = 
+    "Dit is de begeleiders applicatie. Deze applicatie\n" +
+    "zorgt er voor dat je bestanden kan toevoegen of verwijderen.\n" +
+    "klik op 1 van de onderdelen hierboven waar je bestanden wilt toevoegen\n" +
+    "of verwijderen.\n";
+
+    
     
     /**
      * Opens up the part of the application from which music can be added or removed
