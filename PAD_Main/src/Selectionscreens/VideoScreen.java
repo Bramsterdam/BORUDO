@@ -10,13 +10,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javafx.beans.Observable;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -41,8 +46,8 @@ public class VideoScreen implements SelectionMenu {
     private String playUnicode = "▶";
     private String pauseUnicode = "❚❚";
         
-    Button play = new Button(playUnicode);
-    Button pause = new Button(pauseUnicode);
+    Button play = new Button();
+    Button pause = new Button();
     Slider volumeSlider = new Slider();
 
     static boolean playing = false;
@@ -78,7 +83,8 @@ public class VideoScreen implements SelectionMenu {
     //Panes to be added to a scene
     GridPane videoSelectionPane = new GridPane();
     StackPane videoPane = new StackPane();
-    HBox playButtons = new HBox();
+    BorderPane videoBorderPane = new BorderPane();
+    VBox playButtons = new VBox();
     
     public VideoScreen() {
 
@@ -87,9 +93,19 @@ public class VideoScreen implements SelectionMenu {
         videoSelectionPane.setHgap(100);
         videoSelectionPane.setVgap(40);
 
+        //Sets the width and heigth of the playbuttons
+        play.setMinWidth(BUTTON_WIDTH/2);
+        pause.setMinWidth(BUTTON_WIDTH/2);
+        play.setMaxHeight(40);
+        play.setMaxHeight(40);
+        Image playImage = new Image("file:src/Resources/play.png");
+        Image pauseImage = new Image("file:src/Resources/pause.png");
+        play.setGraphic(new ImageView(playImage));
+        pause.setGraphic(new ImageView(pauseImage));
+                
         //sets the button to full volume, instead of 0 volume
         volumeSlider.setValue(100);
-        
+                
         //sets the size and font of the playbuttons
         play.setMinWidth(100);
         pause.setMinWidth(100);
@@ -134,17 +150,19 @@ public class VideoScreen implements SelectionMenu {
         
         //HBox for the play buttons
         playButtons.setStyle("-fx-background-color:#000000");
-        playButtons.setSpacing(10);
+        playButtons.setSpacing(15);
         playButtons.getChildren().addAll(play, pause, volumeSlider);
         
         //sets the correct alignment for the image and play/volume buttons
         mediaView.fitWidthProperty().bind(videoPane.widthProperty());
         mediaView.fitHeightProperty().bind(videoPane.heightProperty());
+        videoPane.getChildren().add(mediaView);
 
         //Add nodes to the correct Panes
-        playButtons.setAlignment(Pos.BOTTOM_LEFT);
-        videoPane.getChildren().addAll((playButtons),(mediaView));      
-
+        playButtons.setAlignment(Pos.CENTER);
+        videoBorderPane.setCenter(videoPane);
+        videoBorderPane.setLeft(playButtons);
+        
         //Initialize selection menu
         Randomize();
 
@@ -276,9 +294,9 @@ public class VideoScreen implements SelectionMenu {
      *
      * @return a videoplayer
      */
-    public StackPane getVideoPlayer() {
+    public BorderPane getVideoPlayer() {
 
-        return videoPane;
+        return videoBorderPane;
     }
 
     private void initializeDB() {

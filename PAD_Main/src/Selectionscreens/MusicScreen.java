@@ -23,9 +23,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -37,13 +38,10 @@ import javafx.scene.media.MediaView;
 public class MusicScreen implements SelectionMenu {
 
     Connection connection;
-    
+
     //Control Buttons for video in video (full)screen mode
-    private String playUnicode = "▶";
-    private String pauseUnicode = "❚❚";
-    
-    Button play = new Button(playUnicode);
-    Button pause = new Button(pauseUnicode);
+    Button play = new Button();
+    Button pause = new Button();
     Slider volumeSlider = new Slider();
 
     final int BUTTON_WIDTH = 500;
@@ -82,8 +80,9 @@ public class MusicScreen implements SelectionMenu {
 
     //Panes to be added to a scene
     GridPane musicSelectionPane = new GridPane();
+    BorderPane musicBorderPane = new BorderPane();
     StackPane musicPane = new StackPane();
-    HBox playButtons = new HBox();
+    VBox playButtons = new VBox();
 
     /**
      *
@@ -94,25 +93,41 @@ public class MusicScreen implements SelectionMenu {
         musicSelectionPane.setAlignment(Pos.CENTER);
         musicSelectionPane.setHgap(100);
         musicSelectionPane.setVgap(40);
-        
-        //sets the button to full volume, instead of 0 volume
+
+        //Sets the width and heigth of the playbuttons, also the font size
+        Image playImage = new Image("file:src/Resources/play.png");
+        Image pauseImage = new Image("file:src/Resources/pause.png");
+        ImageView playView = new ImageView(playImage);
+        ImageView pauseView = new ImageView(pauseImage);
+        playView.setFitWidth(BUTTON_WIDTH / 2);
+        playView.setFitHeight(BUTTON_WIDTH / 2);
+        pauseView.setFitWidth(BUTTON_WIDTH / 2);
+        pauseView.setFitHeight(BUTTON_WIDTH / 2);
+        playView.setPreserveRatio(true);
+        pauseView.setPreserveRatio(true);
+        play.setGraphic((playView));
+        pause.setGraphic((pauseView));
+
+        //sets the button to full volume, instead of 0 volume and sets the width
         volumeSlider.setValue(100);
-        
+        volumeSlider.setMaxWidth(BUTTON_WIDTH / 2);
+
         //event for playing video
-        play.setOnAction(e ->{
+        play.setOnAction(e -> {
             musicPlayer.play();
         });
-        
+
         //event for stopping video
-        pause.setOnAction(e ->{
+        pause.setOnAction(e -> {
             musicPlayer.pause();
         });
-        
+
         //event for changing volume value
         volumeSlider.valueProperty().addListener((Observable ov) -> {
             if (volumeSlider.isValueChanging()) {
                 musicPlayer.setVolume(volumeSlider.getValue() / 100.0);
-            }});
+            }
+        });
 
         //Buttons with an titel label placed on top
         musicSelectionPane.add(pickPlaylist1, 1, 1, 1, 2);
@@ -127,27 +142,29 @@ public class MusicScreen implements SelectionMenu {
         musicSelectionPane.add(pickPlaylist4, 3, 3, 1, 2);
         musicSelectionPane.add(titlePlaylist4, 3, 3);
 
-        musicSelectionPane.setStyle("-fx-background-color:#FFB266");
+        musicSelectionPane.setStyle("-fx-background-color:#A0A0A0");
 
-        musicPane.setStyle("-fx-background-color:#000000");
+        musicBorderPane.setStyle("-fx-background-color:#A0A0A0");
 
         //Stretched the musicplay to fit the screen and set the correct positioning
         mediaView.fitHeightProperty().bind(musicPane.heightProperty());
         imageView.fitHeightProperty().bind(musicPane.heightProperty());
         imageView.setPreserveRatio(true);
-        
+
         //HBox for the play buttons
-        playButtons.setStyle("-fx-background-color:#000000");
-        playButtons.setSpacing(10);
+        playButtons.setStyle("-fx-background-color:#A0A0A0");
+        playButtons.setSpacing(15);
+        playButtons.setAlignment(Pos.CENTER);
         playButtons.getChildren().addAll(play, pause, volumeSlider);
 
         //sets the correct alignment for the image and play/volume buttons
-        musicPane.setAlignment(Pos.CENTER_RIGHT);
-        playButtons.setAlignment(Pos.BOTTOM_LEFT);
+        musicBorderPane.setLeft(playButtons);
+        musicBorderPane.setCenter(musicPane);
 
         //Add nodes to the correct Panes
-        musicPane.setMargin(imageView, new Insets(0, 100, 0, 0));  
-        musicPane.getChildren().addAll((playButtons),(mediaView),(imageView));
+        musicPane.setMargin(imageView, new Insets(0, 50, 0, 0));
+        musicPane.getChildren().addAll((mediaView), (imageView));
+        musicBorderPane.setMargin(playButtons, new Insets(0, 20, 0, 20));            
 
         //Initialize selection menu
         Randomize();
@@ -182,7 +199,7 @@ public class MusicScreen implements SelectionMenu {
                         selectedID = resultSet1.getString("ArtistName");
                         selectedThumbnail = resultSet1.getString("ArtistThumbnail");
                     }
-                    
+
                     //Adds all paths of the songs to an array.
                     ResultSet resultSet2 = state.executeQuery("select musicPath from music where mArtist = '" + selectedID + "' ;");
                     while (resultSet2.next()) {
@@ -201,7 +218,7 @@ public class MusicScreen implements SelectionMenu {
 
                 //if album name is picked
                 try {
-                    
+
                     //Obtain the data that is only relevant once per cycle from the database
                     Statement state = connection.createStatement();
                     ResultSet resultSet1 = state.executeQuery("select PlaylistName,PlaylistThumbnail from playlist ORDER BY RAND() LIMIT 1");
@@ -217,7 +234,7 @@ public class MusicScreen implements SelectionMenu {
                         slideshowFiles.add(selectedPath);
 
                     }
-                    
+
                     //Uses all the obtained info to setup the corresponding button
                     designButton(musicButtons[i], musicLabels[i], selectedID, slideshowFiles, selectedThumbnail);
                 } catch (SQLException ex) {
@@ -302,9 +319,9 @@ public class MusicScreen implements SelectionMenu {
      *
      * @return
      */
-    public StackPane getMusicPlayer() {
+    public BorderPane getMusicPlayer() {
 
-        return musicPane;
+        return musicBorderPane;
     }
 
     private void initializeDB() {
