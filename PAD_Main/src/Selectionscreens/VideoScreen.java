@@ -40,7 +40,7 @@ import pad.PAD;
  */
 public class VideoScreen implements SelectionMenu {
 
-    Connection connection;
+    private static Connection connection;
 
     private static Statement stmnt;
     private static PreparedStatement pst;
