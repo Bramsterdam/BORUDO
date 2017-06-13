@@ -37,6 +37,11 @@ import pad.PAD;
 /**
  *
  * @author $Iwan Snapper
+ * 
+ * In this class the user can select a playlist based on artist or theme.
+ * The selection of playlists are randomized each time.
+ * The user can select a playlist after which a music player will start in which the songs start playing in a randomized order.
+ * The user can pause or restart the song, volume can be changed
  */
 public class MusicScreen implements SelectionMenu {
 
@@ -271,10 +276,8 @@ public class MusicScreen implements SelectionMenu {
     public void designButton(Button button, Label label, String playlistTitle, ArrayList<String> playlist, String cover) {
 
         //Creates and image for the coverpicture to place over the button
-        System.out.println(cover);
         Image thumbnail = new Image(cover, 500, 500, true, true);
         ImageView thumbnailView = new ImageView(thumbnail);
-        System.out.println(thumbnail);
 
         //Changes the size of the button and makes it display the coverimage over the button
         button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -288,7 +291,6 @@ public class MusicScreen implements SelectionMenu {
 
         //Loads the correct video into the video players, then proceed to play the video
         thumbnailView.fitHeightProperty().bind(pickPlaylist1.heightProperty());
-        System.out.println("Nog niet gefaald");
         button.setOnAction((ActionEvent event) -> {
 
             PAD.setFullscreen();
@@ -304,21 +306,21 @@ public class MusicScreen implements SelectionMenu {
     }
 
     /**
-     * Start playing the music
+     * Start playing the music in order
      */
     public void playNextMusic(ArrayList<String> playlist, int songnr) {
 
-        System.out.println(songnr);
-
+        //Load media
         Media media = new Media(new File(playlist.get(songnr)).toURI().toString());
         musicPlayer = new MediaPlayer(media);
         mediaView.setMediaPlayer(musicPlayer);
 
         musicPlayer.setAutoPlay(true);
 
+        //check index of next song in playlist.
         int nextSong = songnr + 1;
-        System.out.println(nextSong);
 
+        //If the playlist has a next song, rerun this method after the end of the last song, if not return to main menu
         if (nextSong < playlist.size()) {
             musicPlayer.setOnEndOfMedia(new Runnable() {
                 @Override
@@ -342,7 +344,7 @@ public class MusicScreen implements SelectionMenu {
                 }
             });
         }
-
+        
         musicPlayer.play();
     }
 
@@ -377,9 +379,7 @@ public class MusicScreen implements SelectionMenu {
     private void initializeDB() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            System.out.println("Driver loaded");
             connection = DriverManager.getConnection("jdbc:mysql://localhost/borudo", "amsta1", "appel123");
-            System.out.println("Database connected");
 
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("Class not found");

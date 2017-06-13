@@ -42,6 +42,7 @@ public class DisplayControl {
             }
         });
         
+        //Restarts the Idle time every the user clicks the mouse button.
         borudoDisplay.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {

@@ -31,7 +31,7 @@ import javafx.scene.media.Media;
 import javafx.stage.FileChooser;
 
 /**
- * This class contains all SQL queries used by the employees
+ * This class contains all SQL queries used by the application
  *
  * @author $Iwan Snapper
  */
@@ -120,6 +120,12 @@ public class SQL {
 
     }
 
+    /**
+     * Adds a video to the database based on given information 
+     * @param location File paths
+     * @param title video title
+     * @param description video description
+     */
     public static void AddVideo(String location, String title, String description) {
 
         initializeDB();
@@ -128,7 +134,6 @@ public class SQL {
         location = location.replace("\\", "\\\\");
 
         //add a video with given information
-        System.out.println("insert into videos (VideoTitle, VideoPath, VideoDescription) VALUES ('" + title + "','" + location + "','" + description + "')");
         try {
 
             Statement state = connection.createStatement();
@@ -178,12 +183,12 @@ public class SQL {
         } catch (SQLException ex) {
             Logger.getLogger(SQL.class.getName()).log(Level.SEVERE, null, ex);
         }
-        /**
-         * Check if Category exists else
-         */
-        //AddPhotoCategory(category);
     }
 
+    /**
+     * Add Music playlist to the database
+     * @param playlistName Playlist name
+     */
     public static void AddMusicPlaylist(String playlistName) {
 
         //placeholder cover
@@ -210,10 +215,13 @@ public class SQL {
 
         } catch (SQLException ex) {
             Logger.getLogger(SQL.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Still not");
         }
     }
 
+    /**
+     * Add Artist to the database
+     * @param artistName Artist Name
+     */
     public static void AddMusicArtist(String artistName) {
 
         //Placeholder image
@@ -236,7 +244,7 @@ public class SQL {
 
             //add new artist to the database
             Statement state = connection.createStatement();
-            System.out.println("insert into artist (artistName, ArtistThumbnail) VALUES ('" + artistName + "', 'file:" + newArtistThumbnail + "')");
+           
             state.executeUpdate("insert into artist (artistName, ArtistThumbnail) VALUES ('" + artistName + "', 'file:" + newArtistThumbnail + "')");
 
         } catch (SQLException ex) {
@@ -244,6 +252,10 @@ public class SQL {
         }
     }
 
+    /**
+     * Add photo thema to the database
+     * @param categoryName Thema name
+     */
     public static void AddPhotoCategory(String categoryName) {
 
         initializeDB();
@@ -258,6 +270,10 @@ public class SQL {
         }
     }
 
+    /**
+     * Remove song from database
+     * @param song Song ID
+     */
     public static void RemoveMusic(Songs song) {
 
         String usedArtist = "";
@@ -289,7 +305,6 @@ public class SQL {
                     removeArtist.executeUpdate();
                 }
             }
-            System.out.println(usedArtist + usedPlaylist);
             ResultSet rs3 = state.executeQuery("Select Count(*) from music where mPlaylist = '" + usedPlaylist + "';");
 
             if (rs3.next()) {
@@ -304,6 +319,10 @@ public class SQL {
         }
     }
 
+    /**
+     * Remove video from database
+     * @param video video ID
+     */
     public static void RemoveVideo(Videos video) {
 
         try {
@@ -320,6 +339,10 @@ public class SQL {
 
     }
 
+    /**
+     * Remove image from database
+     * @param photo image ID
+     */
     public static void RemovePhoto(Photos photo) {
 
         String usedTheme = "";
@@ -332,7 +355,6 @@ public class SQL {
             }
 
             initializeDB();
-            System.out.println("DELETE FROM `borudo`.`photos` WHERE `idPhotos`= ? ;");
             PreparedStatement removeMusic = connection.prepareStatement("DELETE FROM `borudo`.`photos` WHERE `idPhotos`= ? ;");
 
             if (photo.getPhotoID() != null) {
@@ -355,6 +377,10 @@ public class SQL {
         }
     }
 
+    /**
+     * Load existing playlist titles
+     * @param cb combobox filled from database
+     */
     public static void fillPlaylistCB(ComboBox cb) {
 
         initializeDB();
@@ -369,7 +395,6 @@ public class SQL {
             //add all data to a list
             while (rs.next()) {
                 allPlaylists.add(rs.getString("PlaylistName"));
-                System.out.println(rs.getString("PlaylistName"));
 
             }
 
@@ -382,6 +407,10 @@ public class SQL {
 
     }
 
+    /**
+     * Load existing artist names
+     * @param cb combobox filled from database 
+     */
     public static void fillArtistCB(ComboBox cb) {
         initializeDB();
 
@@ -407,6 +436,10 @@ public class SQL {
         }
     }
 
+    /**
+     * load existing theme names
+     * @param cb combobox filled from database
+     */
     public static void fillThemeCB(ComboBox cb) {
         initializeDB();
 

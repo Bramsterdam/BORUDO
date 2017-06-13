@@ -12,6 +12,7 @@ import javafx.scene.control.ListView;
 
 /**
  * This class was supposed to be used to force methode and elements
+ * Unused class
  * @author $Iwan Snapper
  */
 public class ManagementScreen {

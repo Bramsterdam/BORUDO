@@ -30,7 +30,8 @@ import javafx.util.Duration;
 import pad.PAD;
 
 /**
- *
+ * This class creates a selection menu from which a user can select a category
+ * Based on this category a slideshow is displayed based on the photo related to that category
  * @author $Iwan Snapper
  */
 public class PhotoScreen implements SelectionMenu {
@@ -70,16 +71,20 @@ public class PhotoScreen implements SelectionMenu {
     Image testphoto = new Image("file:src/Resources/Music/cover/Anberlin.png", 500, 500, true, true);
     ImageView photoViewer = new ImageView(testphoto);
 
+    //Create pane for the photoviewer
     GridPane photoSelectionPane = new GridPane();
     BorderPane photoPane = new BorderPane();
     StackPane photoPlayer = new StackPane();
     AnchorPane backOnePane = new AnchorPane();
     AnchorPane forwardOnePane = new AnchorPane();
+    
+    //Buttons for navigating within a photo album
     Button backOne = new Button();
     Button forwardOne = new Button();
 
     public PhotoScreen() {
         
+        // Initialization
         photoViewer.setImage(testphoto);
 
         //Sets spacing for the selection menu
@@ -122,7 +127,6 @@ public class PhotoScreen implements SelectionMenu {
         backOnePane.setRightAnchor(navigateBackView, 0.0);
         backOnePane.setTopAnchor(navigateBackView, 0.0);
         backOnePane.setBottomAnchor(navigateBackView,0.0);
-        //navigateBackView.fitHeightProperty().bind(backOnePane.heightProperty());
         navigateBackView.fitWidthProperty().bind(backOne.widthProperty());
         
         //Create and design button for navigating foward in the slideshow
@@ -138,14 +142,15 @@ public class PhotoScreen implements SelectionMenu {
         forwardOnePane.setRightAnchor(navigateForwardView, 0.0);
         forwardOnePane.setTopAnchor(navigateForwardView, 0.0);
         forwardOnePane.setBottomAnchor(navigateForwardView,0.0);
-        //navigateForwardView.fitHeightProperty().bind(forwardOnePane.heightProperty());
         navigateForwardView.fitWidthProperty().bind(forwardOne.widthProperty());
 
+        //Change size of the photoviewer
         photoViewer.fitWidthProperty().bind(photoPlayer.widthProperty());
         photoViewer.fitHeightProperty().bind(photoPlayer.heightProperty());
         photoViewer.prefWidth(BUTTON_HEIGHT);
         photoViewer.setPreserveRatio(true);
 
+        //Create photoviewer
         photoPlayer.getChildren().add(photoViewer);
         backOnePane.getChildren().add(backOne);
         forwardOnePane.getChildren().add(forwardOne);
@@ -182,14 +187,12 @@ public class PhotoScreen implements SelectionMenu {
                 ResultSet resultSet1 = state.executeQuery("select ptheme from PTheme ORDER BY RAND() LIMIT 1");
                 while (resultSet1.next()) {
                     selectedID = resultSet1.getString("ptheme");
-                    System.out.println(selectedID);
                 }
 
                 //Obtains all files from corresponding theme. in random order
                 resultSet1 = state.executeQuery("select PhotoPath from photos where PTheme = '" + selectedID + "' ORDER BY RAND() ;");
                 while (resultSet1.next()) {
                     selectedPath = resultSet1.getString("PhotoPath");
-                    System.out.println(selectedPath + "Dit is de playlist");
                     slideshowFiles.add(selectedPath);
 
                 }
@@ -215,7 +218,6 @@ public class PhotoScreen implements SelectionMenu {
 
         //Creates and image for the coverpicture to place over the button
         String cover = slideshow.get(0);
-        System.out.println(cover + "Dit is de cover");
         Image thumbnail = new Image(cover, 500, 500, true, false);
         ImageView thumbnailViewer = new ImageView();
         button.setGraphic(thumbnailViewer);
@@ -245,19 +247,25 @@ public class PhotoScreen implements SelectionMenu {
 
     }
 
+    /**
+     * Plays a slideshow based on the given arraylist of images
+     * @param playlist arraylist containng all filepaths
+     * @param photoNr arraylist index
+     */
     public void playSlideshow(ArrayList<String> playlist, int photoNr) {
-        System.out.println("De playlist speelt af");
+        
+        //Create current and next image index
         int currentNr = photoNr;
         int nextNr = (photoNr + 1);
-        System.out.println(nextNr);
 
+        //Load images
         String selectedPath = playlist.get(photoNr);
-        System.out.println(selectedPath + "Deze foto wordt afgespeeld.");
         Image selectedPhoto = new Image(selectedPath,1500,1000, true,true);
-        System.out.println(selectedPhoto);
         photoViewer.setImage(selectedPhoto);
         photoViewer.fitWidthProperty().bind(photoPlayer.widthProperty());
 
+        //Set next photo to be played after a certain amount of time has passed.
+        //If there is a next photo, else return to home menu 
         this.tl = new Timeline(new KeyFrame(Duration.seconds(waitTime), (ActionEvent event) -> { 
         if (nextNr < playlist.size()) {
             playSlideshow(playlist, nextNr);
@@ -270,6 +278,7 @@ public class PhotoScreen implements SelectionMenu {
         
         tl.play();
 
+        //Display previous image after pressing button
         backOne.setOnAction((ActionEvent event) -> {
             if (currentNr > 0) {
                 tl.stop();
@@ -278,6 +287,7 @@ public class PhotoScreen implements SelectionMenu {
 
         });
 
+        //Display next image after pressing button, if there is one, else turn off and return to home menu
         forwardOne.setOnAction((ActionEvent event) -> {
             tl.stop();
             if (nextNr < playlist.size()) {
@@ -290,6 +300,9 @@ public class PhotoScreen implements SelectionMenu {
         });
     }
 
+    /**
+     * Stop slideshow and timer to stop the imageviewer from restarting
+     */
     public void stopSlideshow() {
         if(IdleScreen.getPlaying()== true){
         tl.stop();
@@ -320,9 +333,7 @@ public class PhotoScreen implements SelectionMenu {
     public void initializeDB() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            System.out.println("Driver loaded");
             connection = DriverManager.getConnection("jdbc:mysql://localhost/borudo", "amsta1", "appel123");
-            System.out.println("Database connected");
 
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("Class not found");

@@ -10,7 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 /**
- *
+ * Unused class
  * @author $Iwan Snapper
  */
 public interface SelectionMenu {

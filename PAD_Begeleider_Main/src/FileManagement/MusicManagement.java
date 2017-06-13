@@ -45,6 +45,8 @@ import javafx.stage.FileChooser;
 /**
  *
  * @author $Iwan Snapper
+ * 
+ * The user van add songs to a database after given a file and description, added files can be remove from the datqbase
  */
 public class MusicManagement extends ManagementScreen {
 
@@ -61,7 +63,7 @@ public class MusicManagement extends ManagementScreen {
     VBox musicOverview = new VBox();
     GridPane addMusicPane = new GridPane();
 
-    //Bestand zoeken
+    //Search for File
     Label lbMusicManagement = new Label("Muziek toevoegen");
     Label infoLocation = new Label("Selecteer het bestand om toe te voegen");
     Button searchButton = new Button("Bestand zoeken");
@@ -69,7 +71,7 @@ public class MusicManagement extends ManagementScreen {
     Label lbLocation = new Label(defaultNoFile);
     String selectedFile = "";
 
-    //Bestand Toevoegen
+    //Add file
     Label lbTitle = new Label("Titel:");
     TextField tfTitle = new TextField();
     String defaultTfTitle = "Geef het lied een titel";
@@ -83,14 +85,14 @@ public class MusicManagement extends ManagementScreen {
     String defaultCbPlaylist = "Selecteer een bestaande playlist of creeer een nieuwe";
     Button addButton = new Button("Toevoegen");
 
-    //Listview aanpassen en selecteren
+    //Change and select Tableview
     public static ObservableList<Songs> olMusic = FXCollections.observableArrayList();
     TableView<Songs> musicTableView = new TableView<>();
     Button removeButton = new Button("Selectie verwijderen");
 
     public MusicManagement() {
 
-        //List that shows all music
+        //List that shows all songs
         musicOverview.getChildren().addAll(musicTableView, removeButton);
 
         removeButton.prefWidthProperty().bind(musicTableView.widthProperty());
@@ -106,7 +108,7 @@ public class MusicManagement extends ManagementScreen {
         addMusicPane.add(lbLocation, 0, 4, 3, 1);
         addMusicPane.add(searchButton, 1, 5);
 
-        //Bestand Toevoegen
+        //Add File
         addMusicPane.add(lbTitle, 0, 7);
         addMusicPane.add(tfTitle, 0, 8, 3, 1);
         addMusicPane.add(lbArtist, 0, 10);
@@ -132,7 +134,7 @@ public class MusicManagement extends ManagementScreen {
         cbPlaylist.prefWidthProperty().bind(addMusicPane.widthProperty());
         cbPlaylist.setPromptText(defaultCbPlaylist);
 
-        //button beschrijving
+        //Button Description
         removeButton.setFont(new Font("Arial", 25));
 
         //Creates the pop-up window to choose a file, sets the type of file also
@@ -141,6 +143,7 @@ public class MusicManagement extends ManagementScreen {
                 new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3")
         );
 
+        //Button for selecting a file
         searchButton.setOnAction(e -> {
             //button event that triggers fileschooser and retrieves the pathfile
             file = fileChooser.showOpenDialog(searchButton.getScene().getWindow());
@@ -151,6 +154,7 @@ public class MusicManagement extends ManagementScreen {
             }
         });
 
+        //Add file to database
         addButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -169,6 +173,7 @@ public class MusicManagement extends ManagementScreen {
             }
         });
 
+        //Remove button for removing a song from the database, after confirmation
         removeButton.setMinHeight(50);
         removeButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -200,6 +205,9 @@ public class MusicManagement extends ManagementScreen {
         return addMusicPane;
     }
 
+    /**
+     * Set up table view for displaying all songs in the database
+     */
     public void TableViewSetup() {
 
         TableColumn idColumn = new TableColumn("ID");
@@ -226,6 +234,9 @@ public class MusicManagement extends ManagementScreen {
 
     }
 
+    /**
+     * Load all songs into the tableview to display the contents of the database
+     */
     public void loadSongs() {
 
         olMusic.removeAll(olMusic);
@@ -246,6 +257,9 @@ public class MusicManagement extends ManagementScreen {
 
     }
 
+    /**
+     * Resetting the music screen by reloading the database and clearing all textfields
+     */
     public void Reset() {
 
         loadSongs();
@@ -264,9 +278,7 @@ public class MusicManagement extends ManagementScreen {
     private void initializeDB() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            System.out.println("Driver loaded");
             connection = DriverManager.getConnection("jdbc:mysql://localhost/borudo", "amsta1", "appel123");
-            System.out.println("Database connected");
 
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("Class not found");

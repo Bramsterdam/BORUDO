@@ -26,15 +26,20 @@ import javafx.stage.Screen;
 /**
  *
  * @author $Iwan Snapper
+ * 
+ * This class will display an extra screen with extra information if enough time has passed without being reset AKA being idle.
+ * The idle screen can be deactivated upon click for it the restart the timer. 
  */
 public class IdleScreen {
     
+    //Time it takes before screen turns to Idle. If implemented the user could in theory change the time it takes beofre the screen turns to idle
     private static int timeBeforeIdle = 3;
     
     private static final Timeline idleTimeline = new Timeline(new KeyFrame(
             Duration.minutes(timeBeforeIdle),
             ae -> setIdleScreen()));
 
+    //Applicatie wide value wether something is playing. To ensure the idlescreen works differently when something is playing.
     public static boolean playing = false;
 
     private StackPane idlePane = new StackPane();
@@ -45,9 +50,7 @@ public class IdleScreen {
 
     public IdleScreen() {
 
-         
-        
-        // Add Label to StackPane
+        // Add design to the information panel on on the idle functionality
         Label label = new Label("U bevind zich op het Idle scherm ");
         Label label2 = new Label("Druk op het scherm om verder te gaan waar u gebleven was");
         Label label1 = new Label("");
@@ -65,7 +68,7 @@ public class IdleScreen {
         idlePane.getChildren().add(label2);
         idlePane.getChildren().add(label1);
         
-        
+        // Initializes Idlescreen
         idleStage.show();
         idleStage.setMaximized(true);
         idleStage.setAlwaysOnTop(true);
@@ -85,11 +88,18 @@ public class IdleScreen {
         });
     }
 
+    /**
+     * Set for the idle screen to appear on screen
+     */
     public static void setIdleScreen() {
         idleStage.show();
         
     }
 
+    /**
+     * Restarts the time it takes before idle screen pops up.
+     * Doesn't reset when something is playing to prevent it from activating while something is playing
+     */
     public static void restartIdleTimer() {
         idleStage.hide();
         if (playing == false) {
@@ -106,10 +116,18 @@ public class IdleScreen {
         playing = true;
     }
 
+    /**
+     * stop timer from running, thus preventing the idle screen from activating
+     */
     public static void stopIdleTimer() {
         playing = true;
         idleTimeline.stop();
     }
+    
+    /**
+     * Shows whether anything is playing.
+     * @return True is playing, false if not
+     */
     public static boolean getPlaying(){
         return playing;
     }

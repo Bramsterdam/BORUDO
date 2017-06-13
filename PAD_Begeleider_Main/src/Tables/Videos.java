@@ -10,6 +10,8 @@ import javafx.beans.property.SimpleStringProperty;
 /**
  *
  * @author Iwan
+ * 
+ * Set up info for insertion into a tableview
  */
 public class Videos {
     

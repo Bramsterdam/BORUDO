@@ -8,11 +8,6 @@ package Controller;
 import FileManagement.MusicManagement;
 import FileManagement.PhotoManagement;
 import FileManagement.VideoManagement;
-import SQL_Queries.SQL;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -24,15 +19,17 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.geometry.Pos;
 
 
 /**
  *
  * @author $Iwan Snapper
+ * 
+ * This class is used to navigate between the different functionalities through the used of buttons.
+ * It also contains an information window upon startup for providing extra guidance after starting the application
+ * 
  */
 public class ManagementController {
 
@@ -40,6 +37,7 @@ public class ManagementController {
     private static VideoManagement videoManagement = new VideoManagement();
     private static PhotoManagement photoManagement = new PhotoManagement();
 
+    //Creates panes and buttons to for the base of the application
     public static BorderPane managementPane = new BorderPane();
     public static HBox managementQuickbar = new HBox();
     public static GridPane startupPane = new GridPane();
@@ -52,6 +50,9 @@ public class ManagementController {
     private StackPane informationPane;
 
 
+    /**
+     * Initialises the controller class
+     */
     public ManagementController() {
 
         //Music navigationbutton - navigates to music management
@@ -89,7 +90,7 @@ public class ManagementController {
         setVideoButton.setFont(new Font("Arial", 30));
         setPhotoButton.setFont(new Font("Arial", 30));
 
-        // labels
+        // Labels
         Label welcomeLabel = new Label("Welkom bij de begeleiders applicatie");
         Label descriptionLabel = new Label(Beschrijving);
         Label amstaImageLabel = new Label("");
@@ -104,18 +105,13 @@ public class ManagementController {
         descriptionLabel.setPadding(new Insets(100,100,-370,100));
         welcomeLabel.setFont(new Font("Tahoma", 55));
         descriptionLabel.setFont(new Font("Tahoma", 50));
-      
-//        //stackpanes
-//        informationPane.getChildren().add(amstaImageLabel);
-//        informationPane.getChildren().add(welcomeLabel);
-//        informationPane.getChildren().add(descriptionLabel);
-        
+              
         startupPane.add(test, 1, 1, 1,1 );
         startupPane.add(welcomeLabel, 0, 0, 3, 1);
         startupPane.add(descriptionLabel, 0, 0, 3, 1);
         managementPane.setCenter(startupPane);
     }
-     // beschrijving 
+     // Description upon startup
      private static final String Beschrijving = 
     "Dit is de begeleiders applicatie. Deze applicatie\n" +
     "zorgt er voor dat je bestanden kan toevoegen of verwijderen.\n" +

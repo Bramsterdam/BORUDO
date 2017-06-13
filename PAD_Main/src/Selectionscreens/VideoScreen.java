@@ -33,10 +33,11 @@ import pad.PAD;
 
 /**
  *
- * @author Iwan
+ * @author Iwan Snapper
  *
  * This class display a selection of videos from which the user can make a
- * selection. The options are randomized out of a bigger pool of options
+ * selection. The options are randomized out of a bigger pool of options.
+ * Once the user selected a video, the video gets displayed. Videos can be paused and restarted. Volume can be changed
  */
 public class VideoScreen implements SelectionMenu {
 
@@ -200,13 +201,11 @@ public class VideoScreen implements SelectionMenu {
                 ResultSet resultSet1 = state.executeQuery("select idVideo from videos ORDER BY RAND() LIMIT 1");
                 while (resultSet1.next()) {
                     selectedID = resultSet1.getInt(1);
-                    System.out.println(selectedID);
                 }
                 //Obtain the location of the video file
                 resultSet1 = state.executeQuery("select VideoPath, VideoTitle from videos where idVideo = " + selectedID + ";");
                 while (resultSet1.next()) {
                     selectedPath = resultSet1.getString(1);
-                    System.out.println(selectedPath);
                     selectedTitle = resultSet1.getString(2);
                 }
 
@@ -334,9 +333,7 @@ public class VideoScreen implements SelectionMenu {
     private void initializeDB() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            System.out.println("Driver loaded");
             connection = DriverManager.getConnection("jdbc:mysql://localhost/borudo", "amsta1", "appel123");
-            System.out.println("Database connected");
 
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("Class not found");

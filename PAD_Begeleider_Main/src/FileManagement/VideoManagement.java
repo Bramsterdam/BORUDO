@@ -44,6 +44,8 @@ import javafx.stage.FileChooser;
 /**
  *
  * @author $Iwan Snapper
+ * 
+ * The user van add video to a database after given a file and description, added files can be remove from the datqbase
  */
 public class VideoManagement extends ManagementScreen {
 
@@ -149,8 +151,6 @@ public class VideoManagement extends ManagementScreen {
                 if (file != null) {
                     pathFile = file.getAbsolutePath();
                     selectedVideo = pathFile;
-                    System.out.println(pathFile);
-                    System.out.println(selectedVideo);
                     lbLocation.setText(selectedVideo);
                 }
             }
@@ -262,9 +262,7 @@ public class VideoManagement extends ManagementScreen {
     private void initializeDB() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            System.out.println("Driver loaded");
             connection = DriverManager.getConnection("jdbc:mysql://localhost/borudo", "amsta1", "appel123");
-            System.out.println("Database connected");
 
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("Class not found");

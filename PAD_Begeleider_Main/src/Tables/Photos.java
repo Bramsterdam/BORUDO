@@ -10,6 +10,8 @@ import javafx.beans.property.SimpleStringProperty;
 /**
  *
  * @author Iwan
+ * 
+ * Set up info for insertion into a tableview
  */
 public class Photos {
     
@@ -22,9 +24,7 @@ public class Photos {
         this.photoID = new SimpleStringProperty(photoID);
         this.photoTitle  = new SimpleStringProperty(photoTitle);
         this.photoSlideshow = new SimpleStringProperty(photoSlideshow);
-        
     }
-
 
     public String getPhotoID() {
         return photoID.get();

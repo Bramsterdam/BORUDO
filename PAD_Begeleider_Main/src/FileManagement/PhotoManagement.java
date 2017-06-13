@@ -47,6 +47,8 @@ import javafx.stage.FileChooser;
 /**
  *
  * @author $Iwan Snapper
+ * 
+ * The user van add images to a database after given a file and description, added files can be remove from the datqbase
  */
 public class PhotoManagement extends ManagementScreen {
 
@@ -63,7 +65,7 @@ public class PhotoManagement extends ManagementScreen {
     VBox photoOverview = new VBox();
     GridPane addPhotoPane = new GridPane();
 
-    //Bestand zoeken
+    //Search File
     Label lbPhotoManagement = new Label("Foto's toevoegen");
     Label infoLocation = new Label("Selecteer het bestand om toe te voegen");
     Button searchButton = new Button("Bestand zoeken");
@@ -71,8 +73,7 @@ public class PhotoManagement extends ManagementScreen {
     Label lbLocation = new Label(defaultNoFile);
     String selectedFile = "";
 
-    //Add new Categroy
-    //Bestan Toevoegen
+    //Add new Category
     Label lbTitle = new Label("Titel");
     TextField tfTitle = new TextField();
     String defaultTfTitle = "Geef de foto een title";
@@ -81,13 +82,14 @@ public class PhotoManagement extends ManagementScreen {
     String defaultCbCategory = "Voeg toe aan bestaande categorie of voeg nieuwe toe";
     Button addButton = new Button("Toevoegen");
 
-    //Listview aanpassen en selecteren
+    //Add and link Tableview for displaying all images
     ObservableList<Photos> olPhoto = FXCollections.observableArrayList();
     TableView<Photos> photoTableView = new TableView<>();
     Button removeButton = new Button("Selectie verwijderen");
 
     public PhotoManagement() {
 
+        //Create interface for adding images to database
         photoOverview.getChildren().addAll(photoTableView, removeButton);
 
         removeButton.prefWidthProperty().bind(photoTableView.widthProperty());
@@ -103,7 +105,7 @@ public class PhotoManagement extends ManagementScreen {
         addPhotoPane.add(lbLocation, 0, 4);
         addPhotoPane.add(searchButton, 1, 5);
 
-        //Bestand Toevoegen
+        //Add File
         addPhotoPane.add(lbTitle, 0, 7);
         addPhotoPane.add(tfTitle, 0, 8, 3, 1);
         addPhotoPane.add(lbCategory, 0, 10);
@@ -120,7 +122,8 @@ public class PhotoManagement extends ManagementScreen {
         cbCategory.prefWidthProperty().bind(addPhotoPane.widthProperty());
         cbCategory.setEditable(true);
         cbCategory.setPromptText(defaultCbCategory);
-        // remover
+        
+        //Remove button
         removeButton.setFont(new Font("Arial", 25));
 
         //Creates the pop-up window to choose a file, sets the type of file also
@@ -139,6 +142,7 @@ public class PhotoManagement extends ManagementScreen {
             }
         });
 
+        // Add image to database, based on information given
         addButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -159,6 +163,7 @@ public class PhotoManagement extends ManagementScreen {
             }
         });
 
+        // Remove selected file from database after confirmation
         removeButton.setMinHeight(50);
         removeButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -189,7 +194,9 @@ public class PhotoManagement extends ManagementScreen {
     public GridPane getAddPhotoPane() {
         return addPhotoPane;
     }
-
+/**
+     * Set up table view for displaying all images in the database
+     */
     public void TableViewSetup() {
 
         TableColumn idColumn = new TableColumn("ID");
@@ -212,6 +219,10 @@ public class PhotoManagement extends ManagementScreen {
 
     }
 
+    /**
+     * Load all images into the tableview to display the contents of the database
+     */
+    
     public void loadPhotos() {
         olPhoto.removeAll(olPhoto);
 
@@ -230,6 +241,10 @@ public class PhotoManagement extends ManagementScreen {
         }
     }
 
+    
+    /**
+     * Resetting the photo screen by reloading the database and clearing all textfields
+     */
     public void reset() {
 
         loadPhotos();
@@ -246,9 +261,7 @@ public class PhotoManagement extends ManagementScreen {
     private void initializeDB() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            System.out.println("Driver loaded");
             connection = DriverManager.getConnection("jdbc:mysql://localhost/borudo", "amsta1", "appel123");
-            System.out.println("Database connected");
 
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("Class not found");
