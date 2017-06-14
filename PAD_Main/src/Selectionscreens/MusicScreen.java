@@ -198,6 +198,7 @@ public class MusicScreen implements SelectionMenu {
     @Override
     public void Randomize() {
 
+        System.out.println("Randomize Music");
         initializeDB();
 
         //For every button a new playlist is linked
@@ -385,7 +386,7 @@ public class MusicScreen implements SelectionMenu {
             System.out.println("Class not found");
         }
 
-        System.out.println("Gelukt");
+        System.out.println("Database Music Done");;
     }
 
 }

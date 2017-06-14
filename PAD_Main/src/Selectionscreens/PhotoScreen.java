@@ -170,6 +170,8 @@ public class PhotoScreen implements SelectionMenu {
     @Override
     public void Randomize() {
 
+        System.out.println("randomize photo");
+        
         initializeDB();
 
         try {
@@ -337,6 +339,8 @@ public class PhotoScreen implements SelectionMenu {
 
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("Class not found");
+            
+            System.out.println("Database Photos Done");
         }
     }
 

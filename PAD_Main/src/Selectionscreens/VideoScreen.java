@@ -186,11 +186,13 @@ public class VideoScreen implements SelectionMenu {
     @Override
     public void Randomize() {
 
+        System.out.println("Randomize videos");
+        
+        initializeDB();
+        
         int selectedID = 1;
         String selectedPath = "";
         String selectedTitle = "Geen titel";
-
-        initializeDB();
 
         //For every selection button this loop assigns it a specific ID #.
         for (int i = 0; i < videoButtons.length; i++) {
@@ -339,7 +341,7 @@ public class VideoScreen implements SelectionMenu {
             System.out.println("Class not found");
         }
 
-        System.out.println("Gelukt");
+        System.out.println("Database Videos Done");
     }
 
 }
